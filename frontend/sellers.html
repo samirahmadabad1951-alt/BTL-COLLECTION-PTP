@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<!-- work2/frontend/sellers.html - FULLY FIXED: Real file upload, server auth, no popup login -->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sell on EcoStore — Become a Seller</title>
+<meta name="description" content="Join EcoStore as a verified seller. Reach conscious customers and grow your sustainable business."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --radius:1rem;
+  --bg:oklch(0.98 0.012 95);--fg:oklch(0.22 0.04 150);
+  --card:oklch(1 0 0);--card-fg:oklch(0.22 0.04 150);
+  --primary:oklch(0.42 0.12 150);--primary-fg:oklch(0.98 0.012 95);--primary-glow:oklch(0.62 0.16 145);
+  --secondary:oklch(0.94 0.025 100);--secondary-fg:oklch(0.25 0.05 150);
+  --muted:oklch(0.95 0.018 100);--muted-fg:oklch(0.45 0.03 150);
+  --accent:oklch(0.78 0.14 80);--accent-fg:oklch(0.22 0.05 150);
+  --cream:oklch(0.96 0.02 90);--destructive:oklch(0.55 0.2 25);
+  --border:oklch(0.88 0.02 100);
+  --shadow-soft:0 1px 2px oklch(0.3 0.05 150/0.06),0 8px 24px oklch(0.3 0.05 150/0.06);
+  --shadow-leaf:0 20px 60px -20px oklch(0.45 0.13 150/0.35);
+  --font-d:"Fraunces",ui-serif,Georgia,serif;
+  --font-s:"DM Sans",ui-sans-serif,system-ui,sans-serif;
+  --ease:cubic-bezier(0.22,1,0.36,1);
+}
+[data-theme="dark"]{
+  --bg:oklch(0.18 0.025 150);--fg:oklch(0.96 0.015 95);
+  --card:oklch(0.22 0.03 150);--card-fg:oklch(0.96 0.015 95);
+  --primary:oklch(0.72 0.16 145);--primary-fg:oklch(0.18 0.04 150);--primary-glow:oklch(0.78 0.18 140);
+  --secondary:oklch(0.26 0.03 150);--secondary-fg:oklch(0.96 0.015 95);
+  --muted:oklch(0.26 0.03 150);--muted-fg:oklch(0.72 0.02 100);
+  --accent:oklch(0.78 0.14 80);--accent-fg:oklch(0.18 0.04 150);
+  --cream:oklch(0.26 0.03 150);--destructive:oklch(0.65 0.2 25);
+  --border:oklch(1 0 0/12%);
+  --shadow-soft:0 1px 2px oklch(0 0 0/0.3),0 8px 24px oklch(0 0 0/0.2);
+  --shadow-leaf:0 20px 60px -20px oklch(0.45 0.13 150/0.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-s);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-d);letter-spacing:-0.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+img{display:block;max-width:100%}
+input,textarea,select{font-family:inherit}
+ul{list-style:none}
+.gl{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-glow) 100%)}
+.tg{background:linear-gradient(135deg,var(--primary),var(--primary-glow));-webkit-background-clip:text;background-clip:text;color:transparent}
+.shadow-leaf{box-shadow:var(--shadow-leaf)}
+.shadow-soft{box-shadow:var(--shadow-soft)}
+.glass{background:oklch(1 0 0/0.75);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%)}
+[data-theme="dark"] .glass{background:oklch(0.18 0.025 150/0.85)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 1.5rem}
+@media(min-width:640px){.wrap{padding:0 2rem}}
+@media(min-width:1024px){.wrap{padding:0 2.5rem}}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--primary);font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.hide-sm{display:none}
+@media(min-width:640px){.hide-sm{display:flex}}
+.rev{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.rev.in{opacity:1;transform:none}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes toastOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(8px) scale(.95)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== HEADER ===== */
+#hdr{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);transition:box-shadow .3s;background:var(--bg)}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;height:4rem;gap:.5rem}
+.logo{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.logo-icon{width:2.25rem;height:2.25rem;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.logo:hover .logo-icon{transform:rotate(-12deg) scale(1.1)}
+.logo-txt{font-family:var(--font-d);font-size:1.35rem;font-weight:700}
+.logo-txt span{background:linear-gradient(135deg,var(--primary),var(--primary-glow));-webkit-background-clip:text;background-clip:text;color:transparent}
+.desk-nav{display:flex;align-items:center;gap:.25rem}
+@media(max-width:768px){.desk-nav{display:none}}
+.nav-a{position:relative;padding:.5rem 1rem;font-size:.875rem;font-weight:500;color:var(--muted-fg);transition:color .2s;border-radius:9999px}
+.nav-a:hover,.nav-a.active{color:var(--fg)}
+.nav-a.active::after{content:"";position:absolute;bottom:0;left:.75rem;right:.75rem;height:2px;border-radius:9999px;background:var(--primary)}
+.hdr-actions{display:flex;align-items:center;gap:.25rem}
+.ic-btn{width:2.5rem;height:2.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--fg);transition:background .2s;position:relative}
+.ic-btn:hover{background:var(--muted)}
+.ic-btn svg{width:1.25rem;height:1.25rem}
+.ic-badge{position:absolute;top:-2px;right:-2px;min-width:1rem;height:1rem;border-radius:9999px;background:var(--accent);color:var(--accent-fg);font-size:.625rem;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 2px}
+.ic-badge.show{display:flex}
+.cart-btn{display:flex;align-items:center;gap:.5rem;background:var(--primary);color:var(--primary-fg);border-radius:9999px;padding:0 1rem;height:2.5rem;font-size:.875rem;font-weight:700;transition:box-shadow .25s var(--ease),background .2s;position:relative}
+.cart-btn:hover{box-shadow:var(--shadow-leaf)}
+.cart-btn svg{width:1rem;height:1rem}
+.cart-b{position:absolute;top:-4px;right:-4px;min-width:1rem;height:1rem;border-radius:50%;background:var(--accent);color:var(--accent-fg);font-size:.6875rem;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 3px}
+.cart-b.show{display:flex}
+.drop{position:relative}
+.drop-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:10rem;background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow-soft);padding:.375rem;z-index:100;animation:slideDown .2s both;display:none}
+.drop.open .drop-menu{display:block}
+.drop-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.625rem;font-size:.875rem;color:var(--fg);cursor:pointer;transition:background .15s}
+.drop-item:hover{background:var(--muted)}
+.mob-btn{display:none}
+@media(max-width:768px){.mob-btn{display:flex}}
+#mob-nav{display:none;border-top:1px solid var(--border);animation:slideDown .2s both}
+#mob-nav.open{display:block}
+.mob-links{padding:.75rem 0;display:flex;flex-direction:column;gap:.25rem}
+.mob-a{display:block;padding:.625rem .75rem;border-radius:.625rem;font-size:.875rem;font-weight:500;transition:background .15s}
+.mob-a:hover,.mob-a.active{background:var(--muted)}
+
+/* ===== SELLERS PAGE ===== */
+.sellers-header{padding:4rem 0 2rem}
+.sellers-header h1{font-family:var(--font-d);font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.1}
+.sellers-header p{margin-top:1rem;font-size:1.125rem;color:var(--muted-fg);line-height:1.65}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:3rem 0}
+.feature-card{background:var(--card);border-radius:1.5rem;padding:1.5rem;border:1px solid var(--border);box-shadow:var(--shadow-soft);transition:box-shadow .25s var(--ease)}
+.feature-card:hover{box-shadow:var(--shadow-leaf)}
+.feature-icon{width:3rem;height:3rem;border-radius:.875rem;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.feature-icon svg{width:1.5rem;height:1.5rem;color:var(--primary-fg)}
+.feature-card h3{font-family:var(--font-d);font-size:1.125rem;font-weight:700;margin-bottom:.5rem}
+.feature-card p{font-size:.875rem;color:var(--muted-fg);line-height:1.6}
+.steps-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin:2rem 0}
+.step{text-align:center}
+.step-number{width:3rem;height:3rem;border-radius:50%;background:var(--primary);color:var(--primary-fg);display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;margin:0 auto 1rem}
+.step h3{font-family:var(--font-d);font-size:1rem;font-weight:700;margin-bottom:.5rem}
+.step p{font-size:.75rem;color:var(--muted-fg)}
+.application-form{background:var(--card);border-radius:1.875rem;border:1px solid var(--border);padding:2rem;box-shadow:var(--shadow-leaf)}
+.form-title{font-family:var(--font-d);font-size:1.5rem;font-weight:700;margin-bottom:.5rem}
+.form-subtitle{font-size:.875rem;color:var(--muted-fg);margin-bottom:1.5rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:640px){.form-grid{grid-template-columns:1fr}}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-fg);margin-bottom:.375rem}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:.75rem;border-radius:.75rem;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:.875rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in oklch,var(--primary) 15%,transparent)}
+.form-group .currency-input-wrap input,.form-group .currency-input-wrap select{width:auto;padding:0;border-radius:0;border:none;border-right:none;background:transparent;box-shadow:none;outline:none;transition:none}
+.form-group .currency-input-wrap input:focus,.form-group .currency-input-wrap select:focus{border-color:transparent;box-shadow:none}
+.category-toggles{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.375rem}
+.cat-toggle{padding:.375rem .75rem;border-radius:9999px;border:1px solid var(--border);background:var(--bg);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s}
+.cat-toggle.selected{background:var(--primary);color:var(--primary-fg);border-color:var(--primary)}
+
+/* Media Upload */
+.upload-zone{border:2px dashed var(--border);border-radius:.75rem;padding:1.5rem;text-align:center;cursor:pointer;transition:background .2s,border-color .2s;position:relative}
+.upload-zone:hover,.upload-zone.dragover{background:var(--muted);border-color:var(--primary)}
+.upload-zone svg{width:1.5rem;height:1.5rem;color:var(--muted-fg);margin:0 auto .5rem}
+.upload-zone p{font-size:.75rem;color:var(--muted-fg)}
+.upload-zone .upload-hint{font-size:.6875rem;color:var(--muted-fg);margin-top:.25rem;opacity:.7}
+
+/* Image Preview Grid */
+.image-preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:.5rem;margin-top:.75rem}
+.img-preview-item{position:relative;aspect-ratio:1;border-radius:.5rem;overflow:hidden;border:2px solid var(--border);background:var(--muted)}
+.img-preview-item img{width:100%;height:100%;object-fit:cover}
+.img-preview-item .remove-img{position:absolute;top:3px;right:3px;width:20px;height:20px;background:rgba(0,0,0,0.65);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;line-height:1;font-weight:700}
+.img-preview-item .remove-img:hover{background:var(--destructive)}
+.img-preview-item .img-order{position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,0.55);color:#fff;font-size:.6rem;padding:1px 4px;border-radius:3px}
+
+/* Video Preview */
+.video-preview-wrap{margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem}
+.video-preview-item{display:flex;align-items:center;gap:.5rem;background:var(--muted);border-radius:.5rem;padding:.5rem .75rem;font-size:.75rem}
+.video-preview-item .vid-icon{font-size:1rem}
+.video-preview-item .vid-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.video-preview-item .remove-vid{cursor:pointer;color:var(--destructive);font-weight:700;flex-shrink:0}
+.video-preview-item .remove-vid:hover{opacity:.7}
+
+.btn-submit{width:100%;background:var(--primary);color:var(--primary-fg);border-radius:9999px;padding:.875rem;font-weight:700;font-size:.875rem;margin-top:1rem;cursor:pointer;transition:box-shadow .25s var(--ease),opacity .2s}
+.btn-submit:hover{box-shadow:var(--shadow-leaf)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+.seller-tab{padding:.625rem 1.25rem;font-size:.875rem;font-weight:600;border-bottom:2px solid transparent;color:var(--muted-fg);cursor:pointer;transition:color .2s,border-color .2s;background:none;border-top:none;border-left:none;border-right:none}
+.seller-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--primary);color:var(--primary-fg);border-radius:9999px;padding:.875rem 1.5rem;font-size:.875rem;font-weight:700;transition:box-shadow .25s var(--ease)}
+.btn-p:hover{box-shadow:var(--shadow-leaf)}
+
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1rem}
+.product-item{background:var(--bg);border-radius:1rem;padding:1rem;border:1px solid var(--border);position:relative}
+.product-item img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:.5rem;margin-bottom:.5rem}
+.product-item .remove-product{position:absolute;top:.5rem;right:.5rem;background:var(--destructive);color:white;border-radius:50%;width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.75rem}
+.bulk-upload-zone{border:2px dashed var(--border);border-radius:.75rem;padding:1rem;text-align:center;cursor:pointer;margin-top:1rem}
+.success-message{text-align:center;padding:3rem}
+.success-icon{margin:0 auto;width:4rem;height:4rem;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.success-icon svg{width:2rem;height:2rem;color:var(--primary-fg)}
+.success-message h3{font-family:var(--font-d);font-size:1.5rem;font-weight:700;margin-bottom:.5rem}
+.success-message p{color:var(--muted-fg)}
+.status-badge{padding:.25rem .5rem;border-radius:9999px;font-size:.6875rem;font-weight:600}
+.status-badge.active{background:color-mix(in oklch,var(--primary) 15%,transparent);color:var(--primary)}
+.status-badge.pending{background:color-mix(in oklch,var(--accent) 15%,transparent);color:oklch(0.55 0.12 80)}
+.status-badge.inactive{background:color-mix(in oklch,var(--destructive) 15%,transparent);color:var(--destructive)}
+.price-info{background:color-mix(in oklch,var(--primary) 8%,transparent);border:1px solid color-mix(in oklch,var(--primary) 25%,transparent);border-radius:.75rem;padding:.75rem 1rem;margin-bottom:1rem;font-size:.8125rem}
+.price-info strong{color:var(--primary)}
+.loading-spinner{text-align:center;padding:2rem}
+.spinner{width:2rem;height:2rem;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto}
+.empty-state{text-align:center;padding:2rem;color:var(--muted-fg)}
+.progress-bar-wrap{height:4px;background:var(--border);border-radius:2px;margin-top:.5rem;overflow:hidden;display:none}
+.progress-bar-wrap.show{display:block}
+.progress-bar{height:100%;background:var(--primary);border-radius:2px;transition:width .3s;width:0}
+footer{margin-top:6rem;border-top:1px solid var(--border);background:color-mix(in oklch,var(--muted) 40%,transparent)}
+.ft-inner{padding:3.5rem 0}
+.ft-grid{display:grid;gap:2.5rem}
+@media(min-width:768px){.ft-grid{grid-template-columns:5fr 2fr 2fr 3fr}}
+.ft-brand p{margin-top:.75rem;max-width:28rem;font-size:.875rem;color:var(--muted-fg);line-height:1.65}
+.ft-nl{margin-top:1.25rem}
+.ft-nl-form{display:flex;flex-direction:column;gap:.5rem;max-width:22rem}
+@media(min-width:480px){.ft-nl-form{flex-direction:row}}
+.ft-nl-inp{flex:1;height:2.75rem;border-radius:9999px;border:1px solid var(--border);background:var(--bg);padding:0 1rem;color:var(--fg);font-family:var(--font-s);font-size:.875rem;outline:none}
+.ft-nl-inp:focus{border-color:var(--primary)}
+.ft-nl-btn{height:2.75rem;border-radius:9999px;padding:0 1.25rem;background:var(--primary);color:var(--primary-fg);font-weight:700;font-size:.875rem;flex-shrink:0;transition:box-shadow .2s;cursor:pointer}
+.ft-nl-btn:hover{box-shadow:var(--shadow-leaf)}
+.ft-soc{margin-top:1.25rem;display:flex;gap:.5rem}
+.soc-btn{width:2.25rem;height:2.25rem;border-radius:50%;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center}
+.soc-btn:hover{background:var(--muted)}
+.soc-btn svg{width:1rem;height:1rem}
+.ft-col h4{font-family:var(--font-d);font-size:.875rem;font-weight:700}
+.ft-col ul{margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem}
+.ft-col ul a{font-size:.875rem;color:var(--muted-fg);transition:color .15s}
+.ft-col ul a:hover{color:var(--fg)}
+.ft-bot{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;font-size:.75rem;color:var(--muted-fg)}
+#toast-c{position:fixed;bottom:1.5rem;right:1.5rem;z-index:1000;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+.toast{display:flex;align-items:center;gap:.75rem;background:var(--card);border:1px solid var(--border);border-radius:.875rem;padding:.875rem 1.25rem;box-shadow:var(--shadow-soft);font-size:.875rem;font-weight:500;pointer-events:auto;animation:toastIn .3s var(--ease) both;max-width:22rem}
+.toast.out{animation:toastOut .3s var(--ease) both}
+.toast-ic{width:1.5rem;height:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.toast-ic.s{background:var(--primary);color:var(--primary-fg)}
+.toast-ic.e{background:var(--destructive);color:#fff}
+.toast-ic.w{background:var(--accent);color:var(--accent-fg)}
+
+.currency-input-wrap{display:flex;align-items:stretch;border:1.5px solid var(--border);border-radius:.75rem;overflow:hidden;background:var(--bg);transition:border-color .2s,box-shadow .2s;height:48px}
+.currency-input-wrap:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in oklch,var(--primary) 15%,transparent)}
+.currency-select-prefix{flex-shrink:0;border:none!important;border-right:1.5px solid var(--border)!important;border-radius:0!important;background:color-mix(in oklch,var(--muted) 60%,var(--bg))!important;color:var(--fg)!important;font-weight:700;font-size:.875rem;padding:0 .5rem 0 .875rem;cursor:pointer;outline:none;width:auto;min-width:80px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:calc(100% - 8px) center!important;padding-right:24px!important;box-shadow:none!important;height:100%}
+.currency-select-prefix:focus{background-color:color-mix(in oklch,var(--primary) 10%,var(--bg))!important;box-shadow:none!important}
+.currency-price-input{flex:1;border:none!important;border-radius:0!important;background:transparent!important;color:var(--fg);font-size:.9375rem;font-weight:600;padding:.75rem 1rem;width:100%;outline:none!important;box-shadow:none!important;height:100%}
+.currency-price-input::placeholder{color:var(--muted-fg);font-weight:400}
+.currency-price-input::-webkit-inner-spin-button,.currency-price-input::-webkit-outer-spin-button{opacity:.6;height:auto}
+</style>
+</head>
+<body>
+
+<div id="toast-c"></div>
+
+<!-- ===== HEADER ===== -->
+<header id="hdr" class="glass">
+  <div class="wrap">
+    <div class="hdr-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon gl"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
+        <span class="logo-txt">Eco<span>Store</span></span>
+      </a>
+      <nav class="desk-nav">
+        <a href="index.html" class="nav-a">Home</a>
+        <a href="shop.html" class="nav-a">Shop</a>
+        <a href="sellers.html" class="nav-a active">Sell</a>
+        <a href="admin.html" class="nav-a" id="admin-nav-link" style="display:none">Admin</a>
+        <a href="learn.html" class="nav-a">Learn</a>
+      </nav>
+      <div class="hdr-actions">
+        <button class="ic-btn hide-sm" onclick="window.location.href='shop.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <button class="ic-btn hide-sm" onclick="window.location.href='wishlist.html'" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="ic-badge" id="wish-badge"></span>
+        </button>
+        <div class="drop" id="user-dropdown">
+          <button class="ic-btn" id="auth-btn" onclick="toggleUserDropdown()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="user-name-display" style="margin-left:4px;font-size:.8rem;display:none;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+          </button>
+          <div class="drop-menu" id="user-dropdown-menu">
+            <div class="drop-item" onclick="window.location.href='account.html'">📋 My Account</div>
+            <div class="drop-item" onclick="logout()">🚪 Sign Out</div>
+          </div>
+        </div>
+        <div class="drop" id="drop-lang">
+          <button class="ic-btn" onclick="toggleDrop('drop-lang')"><span id="lang-flag" style="font-size:1rem;line-height:1">🇬🇧</span></button>
+          <div class="drop-menu">
+            <div class="drop-item" onclick="setLang('en','🇬🇧','English')">🇬🇧 English</div>
+            <div class="drop-item" onclick="setLang('sw','🇹🇿','Kiswahili')">🇹🇿 Kiswahili</div>
+            <div class="drop-item" onclick="setLang('fr','🇫🇷','Français')">🇫🇷 Français</div>
+            <div class="drop-item" onclick="setLang('es','🇪🇸','Español')">🇪🇸 Español</div>
+          </div>
+        </div>
+        <div class="drop" id="drop-theme">
+          <button class="ic-btn" onclick="toggleDrop('drop-theme')">
+            <svg id="th-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg id="th-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <div class="drop-menu">
+            <div class="drop-item" onclick="setTheme('light')">☀️ Light</div>
+            <div class="drop-item" onclick="setTheme('dark')">🌙 Dark</div>
+            <div class="drop-item" onclick="setTheme('system')">💻 System</div>
+          </div>
+        </div>
+        <button class="cart-btn" onclick="window.location.href='cart.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-b" id="cart-badge"></span>
+        </button>
+        <button class="ic-btn mob-btn" onclick="toggleMob()">
+          <svg id="mob-menu-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg id="mob-x-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mob-nav">
+      <div class="mob-links">
+        <a href="index.html" class="mob-a">Home</a>
+        <a href="shop.html" class="mob-a">Shop</a>
+        <a href="sellers.html" class="mob-a active">Sell</a>
+        <a href="admin.html" class="mob-a" id="mob-admin-link" style="display:none">Admin</a>
+        <a href="learn.html" class="mob-a">Learn</a>
+        <a href="account.html" class="mob-a" id="mob-account-link" style="display:none">Account</a>
+        <a href="wishlist.html" class="mob-a">Wishlist</a>
+        <a href="login.html" class="mob-a" id="mob-auth-link">Sign In</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="sellers-header">
+      <div class="eyebrow">For makers</div>
+      <h1>Reach buyers who care <span class="tg" style="font-style:italic;">about the planet.</span></h1>
+      <p>Submit your eco-certifications, list your products, and ship to a global community of conscious customers.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card rev">
+        <div class="feature-icon gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Verified at signup</h3>
+        <p>Submit organic, biodegradable or recycled-material proof. We review in 48h.</p>
+      </div>
+      <div class="feature-card rev" style="transition-delay:.08s">
+        <div class="feature-icon gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <h3>Easy listing tools</h3>
+        <p>Upload multiple images and videos per product, just like Amazon.</p>
+      </div>
+      <div class="feature-card rev" style="transition-delay:.16s">
+        <div class="feature-icon gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <h3>Grow with impact</h3>
+        <p>Buyers see your CO₂ savings — turn sustainability into a sales story.</p>
+      </div>
+    </div>
+
+    <!-- Main dashboard area — rendered by JS based on auth state -->
+    <div id="seller-dashboard">
+      <div class="loading-spinner"><div class="spinner"></div></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap ft-inner">
+    <div class="ft-grid">
+      <div class="ft-brand">
+        <a href="index.html" class="logo" style="margin-bottom:.75rem;display:inline-flex">
+          <div class="logo-icon gl" style="width:2rem;height:2rem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--primary-fg)"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg></div>
+          <span class="logo-txt" style="font-size:1.25rem">EcoStore</span>
+        </a>
+        <p>The trusted marketplace for verified sustainable goods.</p>
+        <div class="ft-nl">
+          <form class="ft-nl-form" onsubmit="subscribeNewsletter(event)">
+            <input class="ft-nl-inp" type="email" id="ft-nl-email" placeholder="you@earth.com" required/>
+            <button class="ft-nl-btn" type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="ft-col"><h4>Shop</h4><ul><li><a href="shop.html">Shop</a></li><li><a href="wishlist.html">Wishlist</a></li><li><a href="cart.html">Cart</a></li><li><a href="orders.html">Orders</a></li></ul></div>
+      <div class="ft-col"><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="sellers.html">Sell</a></li><li><a href="learn.html">Learn</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="ft-col"><h4>Help</h4><ul><li><a href="faq.html">FAQ</a></li><li><a href="account.html">My account</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li></ul></div>
+    </div>
+    <div class="ft-bot"><span>© <span id="year"></span> EcoStore. Grown with care.</span><span>Carbon-neutral shipping • B-Corp pending</span></div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// SELLERS PAGE — FULLY FIXED
+// ============================================================
+
+function getApiBase() {
+    // Normalise to forward slashes
+    var path = window.location.pathname.replace(/\\/g, '/');
+
+    // Pattern 1: served from /something/frontend/page.html
+    var m = path.match(/^(.*?)\/frontend\//);
+    if (m) return window.location.origin + m[1] + '/backend/api/';
+
+    // Pattern 2: served from /work2/frontend/page.html  (common MAMP/XAMPP)
+    if (path.indexOf('/work2/') !== -1) {
+        return window.location.origin + '/work2/backend/api/';
+    }
+
+    // Pattern 3: served from domain root /backend lives alongside
+    // Walk up to find the api folder relative to current file
+    var parts = path.split('/');
+    parts.pop(); // remove filename
+    // Try going up until we can append /backend/api/
+    // Fallback: same-origin /backend/api/
+    return window.location.origin + '/backend/api/';
+}
+var API_BASE = getApiBase();
+console.log('[EcoStore] API_BASE:', API_BASE);
+
+var currentUser = null;
+var sellerStatus = null; // { isApproved, isPending }
+var forceReapply = false; // module-level flag so it isn't lost when currentUser is re-fetched
+var cart = [], wishlist = [];
+var selectedCategories = [];
+// Product upload state
+var productImageFiles = [];
+var productVideoFiles = [];
+var productVideoUrls  = [];
+var allLabels = ['Biodegradable','Organic','Recycled','Reusable','Solar','Vegan','Plastic-Free','Zero Waste'];
+var selectedProductLabels = [];
+var categories = ['Personal Care','Kitchen','Home','Garden','Bags','Drinkware','Fashion','Electronics'];
+
+// ============================================================
+// Toast
+// ============================================================
+function showToast(msg, type) {
+    type = type || 'success';
+    var c = document.getElementById('toast-c');
+    if (!c) return;
+    var icons = {
+        success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>',
+        error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+        warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+    };
+    var cls = type === 'success' ? 's' : (type === 'warning' ? 'w' : 'e');
+    var t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = '<div class="toast-ic ' + cls + '">' + (icons[type] || icons.success) + '</div><span>' + escapeHtml(msg) + '</span>';
+    c.appendChild(t);
+    setTimeout(function() { t.classList.add('out'); setTimeout(function() { t.remove(); }, 300); }, 3500);
+}
+function currencySymbol(c) {
+    if (c === 'USD') return '$';
+    if (c === 'KES') return 'KSh ';
+    return 'TSh '; // TZS default
+}
+function formatPrice(amount, currency) {
+    var sym = currencySymbol(currency || 'TZS');
+    return sym + parseFloat(amount||0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function escapeHtml(s) { if (!s) return ''; return String(s).replace(/[&<>"']/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+// ============================================================
+// Cart / Wishlist badge
+// ============================================================
+function updateCartBadge() {
+    var b = document.getElementById('cart-badge');
+    if (!b) return;
+    var n = cart.reduce(function(s,i){ return s+(i.qty||1); }, 0);
+    b.textContent = n;
+    if (n > 0) b.classList.add('show'); else b.classList.remove('show');
+}
+function updateWishlistBadge() {
+    var b = document.getElementById('wish-badge');
+    if (!b) return;
+    b.textContent = wishlist.length;
+    if (wishlist.length > 0) b.classList.add('show'); else b.classList.remove('show');
+}
+
+// ============================================================
+// Auth
+// ============================================================
+function logout() {
+    fetch(API_BASE + 'auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
+    localStorage.removeItem('eco_user');
+    currentUser = null;
+    sellerStatus = null;
+    updateAuthUI();
+    showToast('You have been logged out', 'success');
+    setTimeout(function() { window.location.href = 'login.html'; }, 600);
+}
+
+function toggleUserDropdown() {
+    if (!currentUser) {
+        localStorage.setItem('returnUrl', window.location.href);
+        window.location.href = 'login.html';
+        return;
+    }
+    var d = document.getElementById('user-dropdown');
+    if (d) d.classList.toggle('open');
+}
+
+function redirectToLogin() {
+    localStorage.setItem('returnUrl', window.location.href);
+    window.location.href = 'login.html';
+}
+
+function updateAuthUI() {
+    var adminNav    = document.getElementById('admin-nav-link');
+    var mobAdmin    = document.getElementById('mob-admin-link');
+    var mobAccount  = document.getElementById('mob-account-link');
+    var mobAuthLink = document.getElementById('mob-auth-link');
+    var nameSpan    = document.getElementById('user-name-display');
+
+    if (currentUser) {
+        if (nameSpan) { nameSpan.style.display = 'inline'; nameSpan.textContent = currentUser.name.split(' ')[0]; }
+        if (mobAccount)  { mobAccount.style.display  = 'block'; }
+        if (mobAuthLink) { mobAuthLink.style.display  = 'none'; }
+        if (currentUser.role === 'admin') {
+            if (adminNav) adminNav.style.display = 'inline-block';
+            if (mobAdmin) mobAdmin.style.display = 'block';
+        } else {
+            if (adminNav) adminNav.style.display = 'none';
+            if (mobAdmin) mobAdmin.style.display = 'none';
+        }
+    } else {
+        if (nameSpan)    nameSpan.style.display    = 'none';
+        if (adminNav)    adminNav.style.display    = 'none';
+        if (mobAdmin)    mobAdmin.style.display    = 'none';
+        if (mobAccount)  mobAccount.style.display  = 'none';
+        if (mobAuthLink) mobAuthLink.style.display = 'block';
+    }
+}
+
+// ============================================================
+// Check seller status — ALWAYS from server DB (not localStorage)
+// ============================================================
+async function checkSellerStatus() {
+    if (!currentUser) return { isApproved: false, isPending: false, isRejected: false };
+
+    // Re-verify role from server
+    try {
+        var res = await fetch(API_BASE + 'auth.php?action=check', { credentials: 'include' });
+        if (res.ok) {
+            var d = await res.json();
+            if (d.loggedIn && d.user) {
+                currentUser = d.user;
+                localStorage.setItem('eco_user', JSON.stringify(d.user));
+            }
+        }
+    } catch(e) {}
+
+    if (!currentUser) return { isApproved: false, isPending: false, isRejected: false };
+    if (currentUser.role === 'admin') return { isApproved: false, isPending: false, isRejected: false };
+
+    // Seller role confirmed by server = full access
+    if (currentUser.role === 'seller') {
+        return { isApproved: true, isPending: false, isRejected: false };
+    }
+
+    // Check application status from DB
+    try {
+        var appRes = await fetch(API_BASE + 'admin.php?action=my-application', { credentials: 'include' });
+        if (appRes.ok) {
+            var appData = await appRes.json();
+            if (appData.success && appData.application) {
+                var app = appData.application;
+                var st  = app.status;
+                // Support both rejection_count and attempt_count fields
+                var rejCount = parseInt(app.rejection_count || app.attempt_count || 1);
+                return {
+                    isApproved:       st === 'approved',
+                    isPending:        st === 'pending',
+                    isRejected:       st === 'rejected',
+                    rejection_count:  rejCount,
+                    total_applications: parseInt(app.total_applications || app.attempt_count || rejCount),
+                    is_blocked:       app.is_blocked == 1 || app.is_blocked === true,
+                    rejection_reason: app.rejection_reason || ''
+                };
+            }
+        }
+    } catch(e) {}
+
+    return { isApproved: false, isPending: false, isRejected: false, rejection_count: 0, is_blocked: false };
+}
+
+// ============================================================
+// Category / Label toggles
+// ============================================================
+function toggleCategory(btn) {
+    var c = btn.textContent;
+    var idx = selectedCategories.indexOf(c);
+    if (idx > -1) { selectedCategories.splice(idx,1); btn.classList.remove('selected'); }
+    else { selectedCategories.push(c); btn.classList.add('selected'); }
+}
+function toggleProductLabel(btn) {
+    var l = btn.textContent;
+    var idx = selectedProductLabels.indexOf(l);
+    if (idx > -1) { selectedProductLabels.splice(idx,1); btn.classList.remove('selected'); }
+    else { selectedProductLabels.push(l); btn.classList.add('selected'); }
+}
+
+// ============================================================
+// REAL FILE UPLOAD — Images
+// ============================================================
+function handleImageUpload(input) {
+    var files = Array.from(input.files || []);
+    var maxImages = 10;
+    if (productImageFiles.length + files.length > maxImages) {
+        showToast('Maximum ' + maxImages + ' images allowed', 'warning');
+        files = files.slice(0, maxImages - productImageFiles.length);
+    }
+    files.forEach(function(f) {
+        if (f.size > 5 * 1024 * 1024) { showToast(f.name + ' is over 5MB limit', 'error'); return; }
+        productImageFiles.push(f);
+    });
+    renderImagePreviews();
+    input.value = '';
+}
+
+function removeImage(idx) {
+    productImageFiles.splice(idx, 1);
+    renderImagePreviews();
+}
+
+function renderImagePreviews() {
+    var grid = document.getElementById('image-preview-grid');
+    if (!grid) return;
+    if (productImageFiles.length === 0) {
+        grid.innerHTML = '';
+        return;
+    }
+    grid.innerHTML = productImageFiles.map(function(f, i) {
+        var url = URL.createObjectURL(f);
+        return '<div class="img-preview-item">' +
+            '<img src="' + url + '" alt="' + escapeHtml(f.name) + '">' +
+            '<div class="img-order">' + (i+1) + '</div>' +
+            '<div class="remove-img" onclick="removeImage(' + i + ')">✕</div>' +
+        '</div>';
+    }).join('');
+}
+
+// ============================================================
+// REAL FILE UPLOAD — Videos
+// ============================================================
+function handleVideoUpload(input) {
+    var files = Array.from(input.files || []);
+    var maxVideos = 3;
+    if (productVideoFiles.length + files.length > maxVideos) {
+        showToast('Maximum ' + maxVideos + ' videos allowed', 'warning');
+        files = files.slice(0, maxVideos - productVideoFiles.length);
+    }
+    files.forEach(function(f) {
+        if (f.size > 100 * 1024 * 1024) { showToast(f.name + ' exceeds 100MB limit', 'error'); return; }
+        productVideoFiles.push(f);
+    });
+    renderVideoPreviews();
+    input.value = '';
+}
+
+function addVideoUrl() {
+    var inp = document.getElementById('video-url-input');
+    if (!inp || !inp.value.trim()) return;
+    var url = inp.value.trim();
+    if (!url.startsWith('http')) { showToast('Please enter a valid URL', 'error'); return; }
+    productVideoUrls.push(url);
+    inp.value = '';
+    renderVideoPreviews();
+    showToast('Video URL added', 'success');
+}
+
+function removeVideoFile(idx) {
+    productVideoFiles.splice(idx, 1);
+    renderVideoPreviews();
+}
+
+function removeVideoUrl(idx) {
+    productVideoUrls.splice(idx, 1);
+    renderVideoPreviews();
+}
+
+function renderVideoPreviews() {
+    var wrap = document.getElementById('video-preview-wrap');
+    if (!wrap) return;
+    var html = '';
+    productVideoFiles.forEach(function(f, i) {
+        var size = (f.size / (1024*1024)).toFixed(1) + ' MB';
+        html += '<div class="video-preview-item">' +
+            '<span class="vid-icon">🎬</span>' +
+            '<span class="vid-name">' + escapeHtml(f.name) + ' (' + size + ')</span>' +
+            '<span class="remove-vid" onclick="removeVideoFile(' + i + ')">✕</span>' +
+        '</div>';
+    });
+    productVideoUrls.forEach(function(u, i) {
+        html += '<div class="video-preview-item">' +
+            '<span class="vid-icon">🔗</span>' +
+            '<span class="vid-name">' + escapeHtml(u.length > 50 ? u.slice(0,50)+'...' : u) + '</span>' +
+            '<span class="remove-vid" onclick="removeVideoUrl(' + i + ')">✕</span>' +
+        '</div>';
+    });
+    wrap.innerHTML = html;
+}
+
+// Drag & drop support for upload zones
+function setupDropZone(zoneId, inputId, type) {
+    var zone = document.getElementById(zoneId);
+    if (!zone) return;
+    zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', function(){ zone.classList.remove('dragover'); });
+    zone.addEventListener('drop', function(e){
+        e.preventDefault(); zone.classList.remove('dragover');
+        var files = Array.from(e.dataTransfer.files);
+        if (type === 'image') {
+            var fakeInput = { files: files }; handleImageUpload(fakeInput);
+        } else {
+            var fakeInput = { files: files }; handleVideoUpload(fakeInput);
+        }
+    });
+}
+
+// ============================================================
+// Show cert file preview after selection
+// ============================================================
+function showCertPreview(input) {
+    var f = input.files[0];
+    if (!f) return;
+    var preview = document.getElementById('cert-file-preview');
+    var nameEl  = document.getElementById('cert-file-name');
+    var zone    = document.getElementById('cert-upload-zone');
+    var label   = document.getElementById('cert-upload-label');
+    if (nameEl)  nameEl.textContent = f.name + ' (' + (f.size/1024).toFixed(0) + ' KB)';
+    if (preview) preview.style.display = 'flex';
+    if (zone)    zone.style.borderColor = 'var(--primary)';
+    if (label)   label.textContent = 'Certificate selected ✓';
+}
+
+// ============================================================
+// Submit seller application
+// ============================================================
+async function submitSellerApplication() {
+    var brandName   = document.getElementById('brand-name')?.value.trim();
+    var brandEmail  = document.getElementById('brand-email')?.value.trim();
+    var brandCountry= document.getElementById('brand-country')?.value.trim();
+    var sustainDesc = document.getElementById('sustainability-desc')?.value.trim();
+    var certInput   = document.getElementById('cert-file');
+
+    if (!brandName || !brandEmail || !brandCountry || !sustainDesc) {
+        showToast('Please fill in all required fields', 'error'); return;
+    }
+    if (selectedCategories.length === 0) {
+        showToast('Please select at least one product category', 'error'); return;
+    }
+    if (!certInput || !certInput.files.length) {
+        showToast('Please upload your eco-certification document', 'error'); return;
+    }
+
+    var btn = document.getElementById('apply-submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+
+    try {
+        var fd = new FormData();
+        fd.append('brand_name', brandName);
+        fd.append('email', brandEmail);
+        fd.append('country', brandCountry);
+        fd.append('website', document.getElementById('brand-website')?.value || '');
+        fd.append('categories', JSON.stringify(selectedCategories));
+        fd.append('sustainability_description', sustainDesc);
+        fd.append('cert_file', certInput.files[0]);
+        fd.append('user_id', currentUser?.id || '');
+
+        var res = await fetch(API_BASE + 'admin.php?action=submit-seller-application', {
+            method: 'POST', body: fd, credentials: 'include'
+        });
+        var data = await res.json();
+
+        if (data.success) {
+            showToast('Application submitted! We will review within 24 hours. 🌱', 'success');
+            // Re-render dashboard to pending state immediately
+            sellerStatus = { isApproved: false, isPending: true, isRejected: false };
+            forceReapply = false;
+            var dashContainer = document.getElementById('seller-dashboard');
+            if (dashContainer) { dashContainer.innerHTML = renderPendingView(); return; }
+            var container = document.getElementById('seller-form-content');
+            if (container) container.innerHTML = getSuccessHtml('Application received! 🌱', 'We\'ll review your eco-certification within 24 hours and email you the result.');
+        } else {
+            showToast(data.message || 'Failed to submit application', 'error');
+            if (btn) { btn.disabled = false; btn.textContent = 'Submit Application'; }
+        }
+    } catch(e) {
+        showToast('Network error. Please check your connection and try again.', 'error');
+        if (btn) { btn.disabled = false; btn.textContent = 'Submit Application'; }
+    }
+}
+
+function getSuccessHtml(title, msg) {
+    return '<div class="success-message"><div class="success-icon gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><h3>' + escapeHtml(title) + '</h3><p>' + escapeHtml(msg) + '</p><a href="index.html" class="btn-p" style="margin-top:1.5rem;display:inline-flex">Return to Home</a></div>';
+}
+
+// ============================================================
+// Add product — REAL FormData multipart upload
+// ============================================================
+async function addProduct() {
+    var name       = document.getElementById('product-name')?.value.trim();
+    var price      = parseFloat(document.getElementById('product-price')?.value);
+    var ecoScore   = parseInt(document.getElementById('product-eco-score')?.value);
+    var category   = document.getElementById('product-category')?.value;
+    var description= document.getElementById('product-description')?.value.trim() || '';
+    var tagline    = document.getElementById('product-tagline')?.value.trim() || '';
+    var materials  = document.getElementById('product-materials')?.value.trim() || '';
+    var stock      = parseInt(document.getElementById('product-stock')?.value) || 100;
+    var carbon     = parseFloat(document.getElementById('product-carbon')?.value) || 0;
+
+    if (!name)      { showToast('Product name is required', 'error'); return; }
+    if (!price || price <= 0) { showToast('Valid price is required', 'error'); return; }
+    if (!ecoScore || ecoScore < 0 || ecoScore > 10) { showToast('Eco-score must be 0–10', 'error'); return; }
+    if (!category)  { showToast('Please select a category', 'error'); return; }
+    if (productImageFiles.length === 0) { showToast('Please upload at least one product image', 'error'); return; }
+
+    var btn = document.getElementById('product-submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Uploading…'; }
+
+    var progressWrap = document.getElementById('upload-progress-wrap');
+    var progressBar  = document.getElementById('upload-progress-bar');
+    if (progressWrap) progressWrap.classList.add('show');
+
+    try {
+        var fd = new FormData();
+        fd.append('name',        name);
+        fd.append('tagline',     tagline);
+        fd.append('description', description);
+        fd.append('price',       price);
+        fd.append('currency',    document.getElementById('product-currency')?.value || 'TZS');
+        fd.append('eco_score',   ecoScore);
+        fd.append('category',    category);
+        fd.append('carbon_saved',carbon);
+        fd.append('materials',   materials);
+        fd.append('stock',       stock);
+        fd.append('labels',      JSON.stringify(selectedProductLabels));
+
+        // Append images
+        productImageFiles.forEach(function(f) { fd.append('images[]', f); });
+
+        // Append video files
+        productVideoFiles.forEach(function(f) { fd.append('videos[]', f); });
+
+        // Append video URLs
+        productVideoUrls.forEach(function(u) { fd.append('video_url', u); });
+
+        // Use XHR for progress
+        var result = await new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', API_BASE + 'products.php');
+            xhr.withCredentials = true;
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable && progressBar) {
+                    progressBar.style.width = Math.round(e.loaded / e.total * 100) + '%';
+                }
+            });
+            xhr.addEventListener('load', function() {
+                try { resolve(JSON.parse(xhr.responseText)); }
+                catch(e) { reject(new Error('Invalid response')); }
+            });
+            xhr.addEventListener('error', function() { reject(new Error('Network error')); });
+            xhr.send(fd);
+        });
+
+        if (result.success) {
+            showToast('Product submitted for admin review! It will appear in the shop once approved.', 'success');
+            // Clear form
+            resetProductForm();
+            // Reload products list
+            await loadSellerProducts();
+        } else {
+            showToast(result.message || 'Failed to add product', 'error');
+        }
+    } catch(e) {
+        showToast('Upload failed: ' + e.message, 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Submit Product for Review'; }
+        if (progressWrap) { progressWrap.classList.remove('show'); }
+        if (progressBar)  { progressBar.style.width = '0'; }
+    }
+}
+
+function resetProductForm() {
+    var fields = ['product-name','product-tagline','product-price','product-description','product-materials'];
+    fields.forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+    var eco = document.getElementById('product-eco-score'); if (eco) eco.value = '8';
+    var stock = document.getElementById('product-stock'); if (stock) stock.value = '100';
+    var carbon = document.getElementById('product-carbon'); if (carbon) carbon.value = '0';
+    var cat = document.getElementById('product-category'); if (cat) cat.value = '';
+    var vidUrl = document.getElementById('video-url-input'); if (vidUrl) vidUrl.value = '';
+    productImageFiles = []; productVideoFiles = []; productVideoUrls = [];
+    selectedProductLabels = [];
+    renderImagePreviews();
+    renderVideoPreviews();
+    document.querySelectorAll('.cat-toggle.selected').forEach(function(b){ b.classList.remove('selected'); });
+}
+
+// ============================================================
+// Load seller's own products
+// ============================================================
+async function loadSellerProducts() {
+    var container = document.getElementById('seller-products-list');
+    if (!container) return;
+    container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+    try {
+        var res  = await fetch(API_BASE + 'products.php', { credentials: 'include' });
+        var data = await res.json();
+        if (!data.success) throw new Error(data.message);
+
+        var myProducts = (data.products || []).filter(function(p){ return String(p.seller_id) === String(currentUser.id); });
+
+        if (myProducts.length === 0) {
+            container.innerHTML = '<div class="empty-state">No products yet. Add your first product above!</div>';
+            return;
+        }
+
+        container.innerHTML = '<div class="product-grid">' + myProducts.map(function(p) {
+            var statusClass = { active:'active', pending:'pending', inactive:'inactive' }[p.status] || 'inactive';
+            var statusText  = { active:'✓ Live on Shop', pending:'⏳ Pending Admin Review', inactive:'✗ Rejected / Not Approved' }[p.status] || p.status;
+            var coverImg = (p.images && p.images.length > 0) ? p.images[0] : p.image;
+            var imgHtml = coverImg
+                ? '<img src="' + escapeHtml(coverImg) + '" alt="' + escapeHtml(p.name) + '" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:.5rem;margin-bottom:.5rem" onerror="this.parentElement.innerHTML=\'<div style=\\\"aspect-ratio:4/3;background:var(--muted);border-radius:.5rem;margin-bottom:.5rem;display:flex;align-items:center;justify-content:center;font-size:2rem\\\">📦</div>\'">'
+                : '<div style="aspect-ratio:4/3;background:var(--muted);border-radius:.5rem;margin-bottom:.5rem;display:flex;align-items:center;justify-content:center;font-size:2rem">📦</div>';
+            var mediaInfo = '';
+            if (p.images_count > 0) mediaInfo += '📷 ' + p.images_count + ' image' + (p.images_count>1?'s':'');
+            if (p.videos_count > 0) mediaInfo += (mediaInfo?' · ':'') + '🎬 ' + p.videos_count + ' video' + (p.videos_count>1?'s':'');
+
+            // Price edit — always allowed, but if active, it goes to pending for admin review
+            var priceEditHtml = '<div style="margin-top:.5rem;display:flex;align-items:center;gap:.375rem;flex-wrap:wrap">' +
+                '<div class="currency-input-wrap" style="height:32px;border-radius:.5rem">' +
+                '<select class="currency-select-prefix" id="currency-inp-' + p.id + '" style="font-size:.6875rem;min-width:52px;padding-right:16px">' +
+                '<option value="TZS"' + (p.currency==='TZS'||!p.currency?' selected':'') + '>TSh</option>' +
+                '<option value="USD"' + (p.currency==='USD'?' selected':'') + '>USD</option>' +
+                '<option value="KES"' + (p.currency==='KES'?' selected':'') + '>KSh</option>' +
+                '</select>' +
+                '<input type="number" step="0.01" min="0.01" class="currency-price-input" id="price-inp-' + p.id + '" value="' + p.seller_price.toFixed(2) + '" style="width:70px;font-size:.75rem;padding:.375rem .5rem">' +
+                '</div>' +
+                '<button onclick="updateSellerProductPrice(' + p.id + ',' + JSON.stringify(p.status) + ')" ' +
+                'style="padding:.375rem .625rem;border-radius:.5rem;border:1px solid var(--primary);background:transparent;color:var(--primary);font-size:.6875rem;font-weight:700;cursor:pointer">Update Price</button>' +
+            '</div>';
+
+            // Delete button — only for pending/inactive products
+            var deleteHtml = (p.status !== 'active')
+                ? '<div class="remove-product" onclick="deleteProduct(' + p.id + ')" title="Delete product">✕</div>'
+                : '<div title="Contact admin to remove active products" style="position:absolute;top:.5rem;right:.5rem;width:1.5rem;height:1.5rem;background:var(--muted);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;cursor:help;color:var(--muted-fg)">🔒</div>';
+
+            return '<div class="product-item">' +
+                deleteHtml +
+                imgHtml +
+                '<strong style="font-size:.875rem">' + escapeHtml(p.name) + '</strong><br>' +
+                '<span style="font-size:.75rem;color:var(--muted-fg)">Your price: ' + formatPrice(p.seller_price, p.currency) + '</span><br>' +
+                (p.status === 'active' && p.admin_markup > 0
+                    ? '<span style="font-size:.75rem;color:var(--primary)">Selling at: ' + formatPrice(p.price, p.currency) + ' (platform fee: +' + formatPrice(p.admin_markup, p.currency) + ')</span><br>'
+                    : '') +
+                (mediaInfo ? '<span style="font-size:.6875rem;color:var(--muted-fg)">' + mediaInfo + '</span><br>' : '') +
+                '<span class="status-badge ' + statusClass + '" style="margin-top:.375rem;display:inline-block">' + statusText + '</span>' +
+                priceEditHtml +
+            '</div>';
+        }).join('') + '</div>';
+
+    } catch(e) {
+        container.innerHTML = '<div class="empty-state">Unable to load products. Please try again.</div>';
+    }
+}
+
+async function updateSellerProductPrice(productId, currentStatus) {
+    var inp = document.getElementById('price-inp-' + productId);
+    if (!inp) return;
+    var newPrice = parseFloat(inp.value);
+    var currInp = document.getElementById('currency-inp-' + productId);
+    var newCurrency = currInp ? currInp.value : 'TZS';
+    if (!newPrice || newPrice <= 0) { showToast('Please enter a valid price', 'error'); return; }
+
+    try {
+        var res = await fetch(API_BASE + 'products.php', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id: productId, price: newPrice, currency: newCurrency })
+        });
+        var data = await res.json();
+        if (data.success) {
+            if (currentStatus === 'active') {
+                showToast('Price update submitted! Product moved to pending review — admin will re-approve.', 'warning');
+            } else {
+                showToast('Price updated! Admin will review before it goes live.', 'success');
+            }
+            await loadSellerProducts();
+        } else {
+            showToast(data.message || 'Failed to update price', 'error');
+        }
+    } catch(e) { showToast('Network error updating price', 'error'); }
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Delete this product? This cannot be undone.')) return;
+    try {
+        var res  = await fetch(API_BASE + 'products.php?id=' + id, { method: 'DELETE', credentials: 'include' });
+        var data = await res.json();
+        if (data.success) { showToast('Product deleted', 'success'); loadSellerProducts(); }
+        else showToast(data.message || 'Delete failed', 'error');
+    } catch(e) { showToast('Network error', 'error'); }
+}
+
+// ============================================================
+// RENDER DASHBOARD — based on auth state
+// ============================================================
+async function renderSellerDashboard() {
+    var container = document.getElementById('seller-dashboard');
+    if (!container) return;
+
+    container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+
+    try {
+        if (!currentUser) {
+            container.innerHTML = renderGuestView();
+            return;
+        }
+
+        // Admins should use admin.html — sellers.html is for sellers only
+        if (currentUser.role === 'admin') {
+            container.innerHTML = '<div class="success-message" style="padding:3rem">' +
+                '<div class="success-icon gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>' +
+                '<h3>You are logged in as Administrator</h3>' +
+                '<p style="color:var(--muted-fg);max-width:440px;margin:0 auto">The Seller section is for approved sellers only. As an admin, you manage the platform from the Admin Dashboard — review seller applications, approve products, manage orders, and oversee all seller activity.</p>' +
+                '<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">' +
+                    '<a href="admin.html" class="btn-p">Go to Admin Dashboard →</a>' +
+                '</div>' +
+            '</div>';
+            return;
+        }
+
+        sellerStatus = await checkSellerStatus();
+
+        if (sellerStatus.isApproved) {
+            forceReapply = false;
+            container.innerHTML = renderSellerTabsView();
+            setTimeout(function(){
+                setupDropZone('images-drop-zone', 'product-images-input', 'image');
+                setupDropZone('videos-drop-zone', 'product-videos-input', 'video');
+                loadSellerProducts();
+                loadPayoutAccount();
+                switchSellerTab('products');
+            }, 100);
+        } else if (sellerStatus.isPending) {
+            forceReapply = false;
+            container.innerHTML = renderPendingView();
+        } else if (sellerStatus.isRejected && !forceReapply) {
+            // Show rejected view (includes blocked state)
+            container.innerHTML = renderRejectedView();
+        } else if (sellerStatus.is_blocked && !sellerStatus.isApproved) {
+            // Blocked user tried to forceReapply — prevent it
+            forceReapply = false;
+            container.innerHTML = renderRejectedView();
+        } else {
+            // Not applied yet, OR forceReapply=true (rejected, not blocked, wants to reapply)
+            forceReapply = false;
+            container.innerHTML = renderApplicationView();
+            setTimeout(initReveal, 50);
+        }
+    } catch(err) {
+        console.error('renderSellerDashboard error:', err);
+        container.innerHTML = '<div class="empty-state" style="padding:2rem"><p>Something went wrong loading the dashboard. Please refresh the page.</p><button onclick="renderSellerDashboard()" style="margin-top:1rem;padding:.75rem 1.5rem;border-radius:9999px;background:var(--primary);color:var(--primary-fg);border:none;cursor:pointer;font-weight:700">Retry</button></div>';
+    }
+}
+
+function renderGuestView() {
+    return '<div class="grid2" style="align-items:start;gap:2.5rem;">' +
+        '<div class="rev">' +
+            '<h2 style="font-family:var(--font-d);font-size:1.875rem;font-weight:700">Apply to sell</h2>' +
+            '<p style="margin-top:.5rem;color:var(--muted-fg);margin-bottom:1.5rem">Tell us about your brand and upload your eco-certification.</p>' +
+            renderSteps() +
+            '<button class="btn-p" style="margin-top:1.5rem" onclick="redirectToLogin()">Sign In to Apply →</button>' +
+        '</div>' +
+        '<div class="rev" style="transition-delay:.1s">' +
+            '<div class="application-form">' +
+                '<h2 class="form-title">Become a seller</h2>' +
+                '<p class="form-subtitle">Join our community of eco-conscious makers</p>' +
+                '<p style="color:var(--muted-fg);text-align:center;padding:2rem 0">Please <a href="login.html" onclick="localStorage.setItem(\'returnUrl\',window.location.href)" style="color:var(--primary);font-weight:600">sign in</a> to submit your seller application.</p>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+}
+
+function renderPendingView() {
+    return '<div class="success-message">' +
+        '<div class="success-icon gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '<h3>Application Under Review! 🌱</h3>' +
+        '<p>Your seller application is being reviewed by our team. We\'ll notify you within 24 hours.</p>' +
+        '<div style="background:color-mix(in oklch,var(--primary) 8%,transparent);border:1px solid color-mix(in oklch,var(--primary) 20%,transparent);border-radius:1rem;padding:.875rem 1.25rem;margin:1rem auto;max-width:420px;font-size:.8125rem;color:var(--muted-fg)">' +
+            '⏳ You will receive an email once a decision is made. In the meantime, feel free to browse the shop.' +
+        '</div>' +
+        '<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">' +
+            '<a href="index.html" class="btn-p" style="background:var(--muted);color:var(--fg)">Return to Home</a>' +
+            '<button onclick="renderSellerDashboard()" style="display:inline-flex;align-items:center;gap:.5rem;background:var(--primary);color:var(--primary-fg);border-radius:9999px;padding:.875rem 1.5rem;font-size:.875rem;font-weight:700;border:none;cursor:pointer">🔄 Refresh Status</button>' +
+        '</div>' +
+    '</div>';
+}
+
+function renderRejectedView() {
+    var rejCount   = sellerStatus ? parseInt(sellerStatus.rejection_count || 0) : 0;
+    var totalApps  = sellerStatus ? parseInt(sellerStatus.total_applications || rejCount || 1) : 1;
+    var isBlocked  = sellerStatus && (sellerStatus.is_blocked == 1 || sellerStatus.is_blocked === true);
+    var reason     = (sellerStatus && sellerStatus.rejection_reason) ? sellerStatus.rejection_reason : '';
+    var remaining  = Math.max(0, 5 - rejCount);
+
+    var blockedBanner = isBlocked
+        ? '<div style="background:color-mix(in oklch,var(--destructive) 12%,transparent);border:1px solid color-mix(in oklch,var(--destructive) 30%,transparent);border-radius:1rem;padding:1rem 1.5rem;margin:1rem auto;max-width:440px;text-align:center">' +
+          '<p style="font-size:.875rem;font-weight:700;color:var(--destructive)">🚫 Account Permanently Blocked</p>' +
+          '<p style="font-size:.8125rem;color:var(--muted-fg);margin-top:.25rem">Your account has reached the maximum of 5 rejections. You can no longer re-apply through this account. Please contact the admin if you believe this is an error.</p>' +
+          '</div>'
+        : '';
+
+    var statsHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1rem auto;max-width:440px">' +
+        '<div style="background:color-mix(in oklch,var(--destructive) 8%,transparent);border:1px solid color-mix(in oklch,var(--destructive) 20%,transparent);border-radius:.875rem;padding:.875rem;text-align:center">' +
+            '<div style="font-size:.6875rem;color:var(--muted-fg);margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.06em">Rejections</div>' +
+            '<div style="font-family:var(--font-d);font-size:1.75rem;font-weight:700;color:var(--destructive)">' + rejCount + '<span style="font-size:1rem;color:var(--muted-fg)">/5</span></div>' +
+            (isBlocked ? '<div style="font-size:.625rem;font-weight:700;color:var(--destructive);margin-top:2px">BLOCKED</div>' : '<div style="font-size:.625rem;color:var(--primary);margin-top:2px">' + remaining + ' attempt' + (remaining===1?'':'s') + ' left</div>') +
+        '</div>' +
+        '<div style="background:color-mix(in oklch,var(--accent) 8%,transparent);border:1px solid color-mix(in oklch,var(--accent) 20%,transparent);border-radius:.875rem;padding:.875rem;text-align:center">' +
+            '<div style="font-size:.6875rem;color:var(--muted-fg);margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.06em">Applications</div>' +
+            '<div style="font-family:var(--font-d);font-size:1.75rem;font-weight:700">' + totalApps + '</div>' +
+            '<div style="font-size:.625rem;color:var(--muted-fg);margin-top:2px">times applied</div>' +
+        '</div>' +
+    '</div>';
+
+    var reasonHtml = reason
+        ? '<div style="background:var(--muted);border-radius:.75rem;padding:.875rem 1.25rem;margin:.75rem auto;max-width:440px;text-align:left;font-size:.8125rem"><strong>Rejection reason:</strong><br><span style="color:var(--muted-fg)">' + escapeHtml(reason) + '</span></div>'
+        : '';
+
+    var appealBox = '<div style="background:color-mix(in oklch,var(--accent) 12%,transparent);border:1px solid color-mix(in oklch,var(--accent) 30%,transparent);border-radius:1rem;padding:1rem 1.5rem;margin:1.25rem auto;max-width:420px;text-align:left">' +
+        '<p style="font-size:.875rem;font-weight:600;margin-bottom:.5rem">📬 How to appeal:</p>' +
+        '<p style="font-size:.8125rem;color:var(--muted-fg);line-height:1.6">Visit our Contact page and explain why your application meets our eco-standards. The admin can re-approve you at any time.</p>' +
+        '</div>';
+
+    var actions = isBlocked
+        ? '<a href="contact.html" class="btn-p">✉️ Contact Admin</a>'
+        : '<a href="contact.html" class="btn-p" style="background:var(--muted);color:var(--fg)">✉️ Contact Admin</a>' +
+          '<button onclick="forceReapply=true;renderSellerDashboard()" style="display:inline-flex;align-items:center;gap:.5rem;background:var(--primary);color:var(--primary-fg);border-radius:9999px;padding:.875rem 1.5rem;font-size:.875rem;font-weight:700;border:none;cursor:pointer">🔄 Re-Apply Now</button>';
+
+    return '<div class="success-message">' +
+        '<div class="success-icon" style="background:var(--destructive)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>' +
+        '<h3>' + (isBlocked ? 'Account Blocked — Max Rejections Reached' : 'Application Not Approved') + '</h3>' +
+        '<p style="color:var(--muted-fg);max-width:480px;margin:.5rem auto 0">' +
+            (isBlocked ? 'You have reached the maximum of 5 rejections on this account.' : 'Your seller application was not approved this time. You may re-apply or contact admin to appeal.') +
+        '</p>' +
+        blockedBanner + statsHtml + reasonHtml + (isBlocked ? '' : appealBox) +
+        '<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">' + actions + '</div>' +
+    '</div>';
+}
+
+function renderApplicationView() {
+    return '<div class="grid2" style="align-items:start;gap:2.5rem;">' +
+        '<div class="rev">' +
+            '<h2 style="font-family:var(--font-d);font-size:1.875rem;font-weight:700">Apply to sell</h2>' +
+            '<p style="margin-top:.5rem;color:var(--muted-fg);margin-bottom:1.5rem">Tell us about your brand and upload your eco-certification.</p>' +
+            renderSteps() +
+        '</div>' +
+        '<div class="rev" style="transition-delay:.1s">' +
+            '<div class="application-form"><div id="seller-form-content">' +
+                '<h2 class="form-title">Become a seller</h2>' +
+                '<p class="form-subtitle">Join our community of eco-conscious makers</p>' +
+                '<div class="form-grid">' +
+                    '<div class="form-group"><label>Brand name *</label><input type="text" id="brand-name" required placeholder="GreenRoots Co."></div>' +
+                    '<div class="form-group"><label>Email *</label><input type="email" id="brand-email" value="' + escapeHtml(currentUser.email || '') + '" required placeholder="hello@brand.com"></div>' +
+                    '<div class="form-group"><label>Country *</label><input type="text" id="brand-country" required placeholder="Tanzania"></div>' +
+                    '<div class="form-group"><label>Website</label><input type="url" id="brand-website" placeholder="https://"></div>' +
+                '</div>' +
+                '<div class="form-group"><label>Product categories *</label><div class="category-toggles">' +
+                    categories.map(function(c){ return '<button type="button" class="cat-toggle" onclick="toggleCategory(this)">' + c + '</button>'; }).join('') +
+                '</div></div>' +
+                '<div class="form-group"><label>Sustainability description *</label><textarea id="sustainability-desc" rows="4" placeholder="Tell us how your products are eco-friendly and sustainable..."></textarea></div>' +
+                '<div class="form-group"><label>Eco-certification *</label>' +
+                    '<div class="upload-zone" id="cert-upload-zone" onclick="document.getElementById(\'cert-file\').click()">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>' +
+                        '<p id="cert-upload-label">Click to upload PDF or image (GOTS, FSC, USDA Organic…)</p>' +
+                        '<p class="upload-hint">Supported: PDF, JPG, PNG — Max 10MB</p>' +
+                    '</div>' +
+                    '<div id="cert-file-preview" style="display:none;margin-top:.5rem;display:none;align-items:center;gap:.5rem;background:color-mix(in oklch,var(--primary) 10%,transparent);border-radius:.5rem;padding:.5rem .75rem;font-size:.8125rem">' +
+                        '<span>📄</span><span id="cert-file-name" style="font-weight:600;flex:1"></span><span style="color:var(--primary);font-weight:700">✓ Ready to upload</span>' +
+                    '</div>' +
+                    '<input type="file" id="cert-file" style="display:none" accept=".pdf,.jpg,.jpeg,.png" onchange="showCertPreview(this)">' +
+                '</div>' +
+                '<button id="apply-submit-btn" class="btn-submit" onclick="submitSellerApplication()">Submit Application</button>' +
+            '</div></div>' +
+        '</div>' +
+    '</div>';
+}
+
+// ============================================================
+// SELLER TABS: Products | Payout Account
+// ============================================================
+function renderSellerTabsView() {
+    return '<div>' +
+        '<div style="display:flex;gap:.5rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem">' +
+            '<button id="tab-products" class="seller-tab active" onclick="switchSellerTab(\'products\')">📦 My Products</button>' +
+            '<button id="tab-payout" class="seller-tab" onclick="switchSellerTab(\'payout\')">💳 Payout Account</button>' +
+        '</div>' +
+        '<div id="tab-content-products">' + renderSellerProductsView() + '</div>' +
+        '<div id="tab-content-payout" style="display:none">' + renderPayoutAccountView() + '</div>' +
+    '</div>';
+}
+
+function switchSellerTab(tab) {
+    ['products','payout'].forEach(function(t) {
+        var btn     = document.getElementById('tab-'+t);
+        var content = document.getElementById('tab-content-'+t);
+        if (btn)     { btn.classList.toggle('active', t===tab); }
+        if (content) { content.style.display = t===tab ? 'block' : 'none'; }
+    });
+}
+
+function renderPayoutAccountView() {
+    return '<div class="grid2" style="align-items:start;gap:2.5rem">' +
+        // LEFT — earnings summary
+        '<div class="rev">' +
+            '<div class="application-form">' +
+                '<h2 class="form-title">💰 Earnings</h2>' +
+                '<p class="form-subtitle">Your balance and payout history</p>' +
+                '<div id="earnings-summary" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">' +
+                    '<div style="background:var(--muted);border-radius:1rem;padding:1rem;text-align:center"><div style="font-size:.75rem;color:var(--muted-fg);margin-bottom:.25rem">Pending</div><div style="font-family:var(--font-d);font-size:1.5rem;font-weight:700" id="balance-pending">—</div></div>' +
+                    '<div style="background:color-mix(in oklch,var(--primary) 10%,transparent);border-radius:1rem;padding:1rem;text-align:center"><div style="font-size:.75rem;color:var(--muted-fg);margin-bottom:.25rem">Available</div><div style="font-family:var(--font-d);font-size:1.5rem;font-weight:700;color:var(--primary)" id="balance-available">—</div></div>' +
+                    '<div style="background:var(--muted);border-radius:1rem;padding:1rem;text-align:center"><div style="font-size:.75rem;color:var(--muted-fg);margin-bottom:.25rem">Total Earned</div><div style="font-family:var(--font-d);font-size:1.5rem;font-weight:700" id="balance-earned">—</div></div>' +
+                    '<div style="background:var(--muted);border-radius:1rem;padding:1rem;text-align:center"><div style="font-size:.75rem;color:var(--muted-fg);margin-bottom:.25rem">Withdrawn</div><div style="font-family:var(--font-d);font-size:1.5rem;font-weight:700" id="balance-withdrawn">—</div></div>' +
+                '</div>' +
+                '<div style="margin-bottom:1rem">' +
+                    '<label style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-fg);display:block;margin-bottom:.5rem">Request Payout</label>' +
+                    '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+                        '<input type="number" id="payout-amount" placeholder="Amount (TSh/USD/KSh)" style="flex:1;min-width:120px;padding:.75rem;border-radius:.75rem;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:.875rem">' +
+                        '<select id="payout-method" style="padding:.75rem;border-radius:.75rem;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:.875rem">' +
+                            '<option value="M-Pesa">M-Pesa</option>' +
+                            '<option value="Tigo Pesa">Tigo Pesa</option>' +
+                            '<option value="Airtel Money">Airtel Money</option>' +
+                            '<option value="Bank Transfer">Bank Transfer</option>' +
+                        '</select>' +
+                        '<button class="btn-p" onclick="requestPayout()" style="padding:.75rem 1.25rem">Request</button>' +
+                    '</div>' +
+                    '<p style="font-size:.75rem;color:var(--muted-fg);margin-top:.5rem">Payouts processed within 1–3 business days to your registered account below.</p>' +
+                '</div>' +
+                '<div id="payout-history-list"><div class="loading-spinner" style="padding:1.5rem"><div class="spinner" style="width:1.5rem;height:1.5rem;margin:0 auto"></div></div></div>' +
+            '</div>' +
+        '</div>' +
+        // RIGHT — payout account details
+        '<div class="rev" style="transition-delay:.1s">' +
+            '<div class="application-form">' +
+                '<h2 class="form-title">🏦 Payout Account</h2>' +
+                '<p class="form-subtitle">Where you want to receive your earnings</p>' +
+                '<div style="background:color-mix(in oklch,var(--primary) 10%,transparent);border-radius:.75rem;padding:.875rem;margin-bottom:1.25rem;font-size:.875rem">' +
+                    '💡 Fill in at least one payout method. We use these details to send your earnings when you request a payout.' +
+                '</div>' +
+                '<div class="form-group"><label>Business Name</label><input type="text" id="pa-business-name" placeholder="Your Brand Name"></div>' +
+                '<div style="margin:1rem 0;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-fg)">📱 Mobile Money</div>' +
+                '<div class="form-group"><label>M-Pesa Phone</label><input type="tel" id="pa-mpesa" placeholder="e.g. 0741 000 000"><div style="font-size:.625rem;color:var(--muted-fg);margin-top:.25rem">Vodacom M-Pesa number registered in your name</div></div>' +
+                '<div class="form-group"><label>Tigo Pesa Phone</label><input type="tel" id="pa-tigo" placeholder="e.g. 0712 000 000"></div>' +
+                '<div class="form-group"><label>Airtel Money Phone</label><input type="tel" id="pa-airtel" placeholder="e.g. 0688 000 000"></div>' +
+                '<div style="margin:1rem 0;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-fg)">🏦 Bank Transfer</div>' +
+                '<div class="form-group"><label>Bank Name</label><input type="text" id="pa-bank-name" placeholder="e.g. CRDB, NMB, Stanbic"></div>' +
+                '<div class="form-group"><label>Account Number</label><input type="text" id="pa-bank-account" placeholder="Your bank account number"><div style="font-size:.625rem;color:var(--muted-fg);margin-top:.25rem">Ensure the account is in the same name as your registered business</div></div>' +
+                '<button class="btn-submit" onclick="savePayoutAccount()">Save Payout Account</button>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+}
+
+async function loadPayoutAccount() {
+    try {
+        var earningsRes = await fetch(API_BASE + 'payout.php?action=earnings', { credentials: 'include' });
+        if (!earningsRes.ok) { throw new Error('payout.php not found'); }
+        var earningsData = await earningsRes.json();
+        if (earningsData.success && earningsData.earnings) {
+            var e = earningsData.earnings;
+            var acctCurrency = (sellerAccount && sellerAccount.currency) ? sellerAccount.currency : 'TZS';
+        var fmt = function(v) { return formatPrice(v, acctCurrency); };
+            var el = document.getElementById('balance-pending');   if(el) el.textContent = fmt(e.pending_balance);
+            var el = document.getElementById('balance-available'); if(el) el.textContent = fmt(e.available_balance);
+            var el = document.getElementById('balance-earned');    if(el) el.textContent = fmt(e.total_earned);
+            var el = document.getElementById('balance-withdrawn'); if(el) el.textContent = fmt(e.total_withdrawn);
+        }
+
+        var acctRes = await fetch(API_BASE + 'payout.php?action=account', { credentials: 'include' });
+        var acctData = await acctRes.json();
+        if (acctData.success && acctData.account) {
+            var a = acctData.account;
+            var set = function(id, val) { var el = document.getElementById(id); if(el) el.value = val||''; };
+            set('pa-business-name', a.business_name);
+            set('pa-mpesa',         a.mpesa_phone ? ('0'+String(a.mpesa_phone).slice(3)) : '');
+            set('pa-tigo',          a.tigo_phone  ? ('0'+String(a.tigo_phone).slice(3))  : '');
+            set('pa-airtel',        a.airtel_phone? ('0'+String(a.airtel_phone).slice(3)) : '');
+            set('pa-bank-name',     a.bank_name);
+            set('pa-bank-account',  a.bank_account);
+        }
+
+        var histRes = await fetch(API_BASE + 'payout.php?action=history', { credentials: 'include' });
+        var histData = await histRes.json();
+        var container = document.getElementById('payout-history-list');
+        if (!container) return;
+        if (histData.success && histData.payouts && histData.payouts.length) {
+            container.innerHTML = '<div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-fg);margin-bottom:.75rem">Payout History</div>' +
+                histData.payouts.map(function(p) {
+                    var statusColor = p.status==='completed' ? 'var(--primary)' : p.status==='failed' ? 'var(--destructive)' : 'var(--accent)';
+                    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.625rem 0;border-bottom:1px solid var(--border);font-size:.875rem">' +
+                        '<div><div style="font-weight:600">TZS ' + parseFloat(p.amount).toLocaleString() + '</div><div style="font-size:.75rem;color:var(--muted-fg)">' + (p.payment_method||'') + ' • ' + new Date(p.requested_at).toLocaleDateString() + '</div></div>' +
+                        '<span style="font-size:.75rem;font-weight:700;color:' + statusColor + '">' + (p.status||'pending').toUpperCase() + '</span>' +
+                    '</div>';
+                }).join('');
+        } else {
+            container.innerHTML = '<p style="font-size:.875rem;color:var(--muted-fg);text-align:center;padding:1rem">No payouts yet. Earnings from your sales will appear here.</p>';
+        }
+    } catch(e) {
+        console.error('loadPayoutAccount error:', e);
+        // payout.php may not be deployed yet — show friendly message
+        var pending = document.getElementById('balance-pending');
+        var available = document.getElementById('balance-available');
+        var earned = document.getElementById('balance-earned');
+        var withdrawn = document.getElementById('balance-withdrawn');
+        var hist = document.getElementById('payout-history-list');
+        if (pending) pending.textContent = 'TZS 0';
+        if (available) available.textContent = 'TZS 0';
+        if (earned) earned.textContent = 'TZS 0';
+        if (withdrawn) withdrawn.textContent = 'TZS 0';
+        if (hist) hist.innerHTML = '<p style="font-size:.875rem;color:var(--muted-fg);text-align:center;padding:1rem">Earnings tracking coming soon. Your sales are recorded.</p>';
+    }
+}
+
+async function savePayoutAccount() {
+    var data = {
+        business_name: document.getElementById('pa-business-name')?.value||'',
+        mpesa_phone:   document.getElementById('pa-mpesa')?.value||'',
+        tigo_phone:    document.getElementById('pa-tigo')?.value||'',
+        airtel_phone:  document.getElementById('pa-airtel')?.value||'',
+        bank_name:     document.getElementById('pa-bank-name')?.value||'',
+        bank_account:  document.getElementById('pa-bank-account')?.value||'',
+    };
+    if (!data.business_name) { showToast('Please enter your business name', 'error'); return; }
+    if (!data.mpesa_phone && !data.tigo_phone && !data.airtel_phone && !data.bank_account) {
+        showToast('Please enter at least one payout method', 'error'); return;
+    }
+    try {
+        var res = await fetch(API_BASE + 'payout.php?action=save_account', {
+            method: 'POST', headers: {'Content-Type':'application/json'}, credentials: 'include',
+            body: JSON.stringify(data)
+        });
+        var result = await res.json();
+        showToast(result.message || (result.success ? 'Saved!' : 'Save failed'), result.success ? 'success' : 'error');
+    } catch(e) { showToast('Network error saving account', 'error'); }
+}
+
+async function requestPayout() {
+    var amount = parseFloat(document.getElementById('payout-amount')?.value||0);
+    var method = document.getElementById('payout-method')?.value||'';
+    if (!amount || amount < 1000) { showToast('Minimum payout is TZS 1,000', 'error'); return; }
+    try {
+        var res = await fetch(API_BASE + 'payout.php?action=request_payout', {
+            method: 'POST', headers: {'Content-Type':'application/json'}, credentials: 'include',
+            body: JSON.stringify({ amount: amount, payout_method: method })
+        });
+        var result = await res.json();
+        showToast(result.message || (result.success ? 'Payout requested!' : 'Failed'), result.success ? 'success' : 'error');
+        if (result.success) { loadPayoutAccount(); document.getElementById('payout-amount').value = ''; }
+    } catch(e) { showToast('Network error', 'error'); }
+}
+
+function renderSellerProductsView() {
+    var labelToggles = allLabels.map(function(l){
+        return '<button type="button" class="cat-toggle" onclick="toggleProductLabel(this)">' + l + '</button>';
+    }).join('');
+
+    return '<div class="grid2" style="align-items:start;gap:2.5rem;">' +
+        '<!-- LEFT: Add Product Form -->' +
+        '<div class="rev"><div class="application-form">' +
+            '<h2 class="form-title">Add New Product</h2>' +
+            '<div class="price-info">💡 <strong>How pricing works:</strong> Enter your desired price. Admin may add a small platform fee when approving. When a customer buys, you receive your original price and the platform keeps the fee.</div>' +
+
+            '<div class="form-group"><label>Product Name *</label><input type="text" id="product-name" required placeholder="Eco Bamboo Toothbrush"></div>' +
+            '<div class="form-group"><label>Tagline</label><input type="text" id="product-tagline" placeholder="Short catchy description (max 100 chars)"></div>' +
+            '<div class="form-grid">' +
+                '<div class="form-group"><label>Your Price *</label><div class="currency-input-wrap"><select class="currency-select-prefix" id="product-currency"><option value="TZS" selected>TSh</option><option value="USD">USD</option><option value="KES">KSh</option></select><input type="number" step="0.01" min="0.01" class="currency-price-input" id="product-price" required placeholder="0.00"></div></div>' +
+                '<div class="form-group"><label>Eco-Score (0–10) *</label><input type="number" min="0" max="10" id="product-eco-score" required value="8"></div>' +
+                '<div class="form-group"><label>Category *</label><select id="product-category" required><option value="">Select Category</option>' +
+                    categories.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('') +
+                '</select></div>' +
+                '<div class="form-group"><label>Carbon Saved (kg)</label><input type="number" step="0.1" min="0" id="product-carbon" value="0"></div>' +
+            '</div>' +
+            '<div class="form-group"><label>Description</label><textarea id="product-description" rows="4" placeholder="Describe your product in detail — materials, usage, eco benefits…"></textarea></div>' +
+            '<div class="form-group"><label>Materials (comma separated)</label><input type="text" id="product-materials" placeholder="e.g. Bamboo, Recycled Nylon, Organic Cotton"></div>' +
+            '<div class="form-group"><label>Stock Quantity</label><input type="number" min="0" id="product-stock" value="100"></div>' +
+            '<div class="form-group"><label>Labels</label><div class="category-toggles">' + labelToggles + '</div></div>' +
+
+            '<!-- IMAGE UPLOAD -->' +
+            '<div class="form-group">' +
+                '<label>Product Images * <span style="font-weight:400;text-transform:none;letter-spacing:0">(up to 10, first = cover photo)</span></label>' +
+                '<div class="upload-zone" id="images-drop-zone" onclick="document.getElementById(\'product-images-input\').click()">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' +
+                    '<p>Click or drag &amp; drop product images here</p>' +
+                    '<p class="upload-hint">JPG, PNG, WebP — Max 5MB each — Multiple files supported</p>' +
+                '</div>' +
+                '<input type="file" id="product-images-input" style="display:none" accept="image/*" multiple onchange="handleImageUpload(this)">' +
+                '<div class="image-preview-grid" id="image-preview-grid"></div>' +
+            '</div>' +
+
+            '<!-- VIDEO UPLOAD -->' +
+            '<div class="form-group">' +
+                '<label>Product Videos <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional — upload file OR add URL)</span></label>' +
+                '<div class="upload-zone" id="videos-drop-zone" onclick="document.getElementById(\'product-videos-input\').click()">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.894L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>' +
+                    '<p>Click or drag &amp; drop video files here</p>' +
+                    '<p class="upload-hint">MP4, WebM — Max 100MB — Up to 3 videos</p>' +
+                '</div>' +
+                '<input type="file" id="product-videos-input" style="display:none" accept="video/mp4,video/webm,video/ogg" multiple onchange="handleVideoUpload(this)">' +
+                '<div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">' +
+                    '<input type="url" id="video-url-input" style="flex:1;min-width:200px;padding:.625rem .75rem;border-radius:.75rem;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:.875rem;outline:none" placeholder="Or paste YouTube/Vimeo URL">' +
+                    '<button type="button" style="padding:.625rem 1rem;border-radius:.75rem;border:1px solid var(--border);background:var(--muted);font-size:.875rem;cursor:pointer" onclick="addVideoUrl()">Add URL</button>' +
+                '</div>' +
+                '<div class="video-preview-wrap" id="video-preview-wrap"></div>' +
+            '</div>' +
+
+            '<div class="progress-bar-wrap" id="upload-progress-wrap"><div class="progress-bar" id="upload-progress-bar"></div></div>' +
+            '<button id="product-submit-btn" class="btn-submit" onclick="addProduct()">Submit Product for Review</button>' +
+            '<p style="font-size:.75rem;color:var(--muted-fg);text-align:center;margin-top:.5rem">Products go pending — admin approves and sets final selling price.</p>' +
+        '</div></div>' +
+
+        '<!-- RIGHT: Your Products -->' +
+        '<div class="rev" style="transition-delay:.1s"><div class="application-form">' +
+            '<h2 class="form-title">Your Products</h2>' +
+            '<p class="form-subtitle">Manage your submitted and approved listings</p>' +
+            '<div id="seller-products-list"><div class="loading-spinner"><div class="spinner"></div></div></div>' +
+        '</div></div>' +
+    '</div>';
+}
+
+function renderSteps() {
+    var steps = [
+        { n:'1', title:'Submit application', desc:'Fill out the form with your brand details' },
+        { n:'2', title:'Eco-certification review', desc:'We verify your sustainability claims in 48h' },
+        { n:'3', title:'List your products', desc:'Upload photos, videos & descriptions' },
+        { n:'4', title:'Start selling', desc:'Reach conscious customers worldwide' },
+    ];
+    return '<div class="steps-container">' + steps.map(function(s){
+        return '<div class="step"><div class="step-number">' + s.n + '</div><h3>' + s.title + '</h3><p>' + s.desc + '</p></div>';
+    }).join('') + '</div>';
+}
+
+// ============================================================
+// Bulk CSV upload
+// ============================================================
+function processBulkUpload(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = async function(e) {
+        var lines = e.target.result.trim().split('\n');
+        var count = 0;
+        for (var i = 1; i < lines.length; i++) {
+            var v = lines[i].split(',');
+            if (v.length >= 4 && v[0].trim()) {
+                var fd = new FormData();
+                fd.append('name',     v[0].trim());
+                fd.append('price',    parseFloat(v[1]) || 0);
+                fd.append('category', v[2].trim());
+                fd.append('eco_score',parseInt(v[3]) || 8);
+                fd.append('tagline',  v[4]?.trim() || '');
+                fd.append('description', v[5]?.trim() || '');
+                fd.append('materials', v[6]?.trim() || '');
+                fd.append('stock',    parseInt(v[7]) || 100);
+                try { await fetch(API_BASE + 'products.php', { method:'POST', body:fd, credentials:'include' }); count++; }
+                catch(e) {}
+            }
+        }
+        showToast(count + ' products submitted for review!', 'success');
+        loadSellerProducts();
+    };
+    reader.readAsText(file);
+    input.value = '';
+}
+
+// ============================================================
+// Newsletter
+// ============================================================
+async function subscribeNewsletter(e) {
+    e.preventDefault();
+    var inp = document.getElementById('ft-nl-email');
+    if (!inp || !inp.value.includes('@')) { showToast('Please enter a valid email', 'error'); return; }
+    showToast('Subscribed! Welcome 🌱', 'success');
+    inp.value = '';
+}
+
+// ============================================================
+// Theme / Lang / Dropdowns
+// ============================================================
+function setTheme(m) {
+    var h = document.documentElement;
+    var t = m === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : m;
+    h.setAttribute('data-theme', t);
+    localStorage.setItem('eco_theme', m);
+    var sun = document.getElementById('th-sun'), moon = document.getElementById('th-moon');
+    if (sun && moon) { sun.style.display = t==='dark'?'none':''; moon.style.display = t==='dark'?'':'none'; }
+    closeAllDropdowns();
+}
+function setLang(c, f) {
+    var lf = document.getElementById('lang-flag');
+    if (lf) lf.textContent = f;
+    localStorage.setItem('eco_lang', c);
+    closeAllDropdowns();
+}
+function toggleDrop(id) {
+    var d = document.getElementById(id);
+    if (!d) return;
+    var was = d.classList.contains('open');
+    closeAllDropdowns();
+    if (!was) d.classList.add('open');
+}
+function closeAllDropdowns() {
+    document.querySelectorAll('.drop').forEach(function(d){ d.classList.remove('open'); });
+}
+function toggleMob() {
+    var mn = document.getElementById('mob-nav');
+    var mi = document.getElementById('mob-menu-ic');
+    var xi = document.getElementById('mob-x-ic');
+    if (!mn) return;
+    var open = mn.classList.toggle('open');
+    if (mi) mi.style.display = open ? 'none' : '';
+    if (xi) xi.style.display = open ? '' : 'none';
+}
+function initReveal() {
+    var o = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); o.unobserve(e.target); } });
+    }, { threshold:.08 });
+    document.querySelectorAll('.rev:not(.in)').forEach(function(el){ o.observe(el); });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('year').textContent = new Date().getFullYear();
+setTheme(localStorage.getItem('eco_theme') || 'light');
+
+// Load user from localStorage initially
+var saved = localStorage.getItem('eco_user');
+if (saved) { try { currentUser = JSON.parse(saved); } catch(e){} }
+
+// Verify session with server, then render dashboard
+(async function init() {
+    try {
+        var res = await fetch(API_BASE + 'auth.php?action=check', { credentials: 'include' });
+        var d   = await res.json();
+        if (d.loggedIn && d.user) {
+            currentUser = d.user;
+            localStorage.setItem('eco_user', JSON.stringify(d.user));
+        } else {
+            currentUser = null;
+            localStorage.removeItem('eco_user');
+        }
+    } catch(e) {
+        // Use localStorage fallback if backend is unreachable
+    }
+    updateAuthUI();
+    renderSellerDashboard();
+})();
+
+// Cart / wishlist
+var savedCart = localStorage.getItem('eco_cart');
+if (savedCart) { try { cart = JSON.parse(savedCart); } catch(e){} }
+var savedWish = localStorage.getItem('eco_wishlist');
+if (savedWish) { try { wishlist = JSON.parse(savedWish); } catch(e){} }
+updateCartBadge();
+updateWishlistBadge();
+
+// Close dropdowns on outside click
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.drop')) closeAllDropdowns();
+});
+
+// Sticky header shadow
+window.addEventListener('scroll', function() {
+    var hdr = document.getElementById('hdr');
+    if (hdr) hdr.style.boxShadow = window.scrollY > 10 ? 'var(--shadow-soft)' : '';
+});
+
+setTimeout(initReveal, 300);
+</script>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<!-- works2/frontend/faq.html - FULLY CONNECTED TO BACKEND -->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FAQ — EcoStore Help Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet"/>
+<style>
+:root{--radius:1rem;--bg:oklch(0.98 0.012 95);--fg:oklch(0.22 0.04 150);--card:oklch(1 0 0);--card-fg:oklch(0.22 0.04 150);--primary:oklch(0.42 0.12 150);--primary-fg:oklch(0.98 0.012 95);--primary-glow:oklch(0.62 0.16 145);--secondary:oklch(0.94 0.025 100);--secondary-fg:oklch(0.25 0.05 150);--muted:oklch(0.95 0.018 100);--muted-fg:oklch(0.45 0.03 150);--accent:oklch(0.78 0.14 80);--accent-fg:oklch(0.22 0.05 150);--cream:oklch(0.96 0.02 90);--destructive:oklch(0.55 0.2 25);--border:oklch(0.88 0.02 100);--shadow-soft:0 1px 2px oklch(0.3 0.05 150/0.06),0 8px 24px oklch(0.3 0.05 150/0.06);--shadow-leaf:0 20px 60px -20px oklch(0.45 0.13 150/0.35);--font-d:"Fraunces",ui-serif,Georgia,serif;--font-s:"DM Sans",ui-sans-serif,system-ui,sans-serif;--ease:cubic-bezier(0.22,1,0.36,1);}
+[data-theme="dark"]{--bg:oklch(0.18 0.025 150);--fg:oklch(0.96 0.015 95);--card:oklch(0.22 0.03 150);--card-fg:oklch(0.96 0.015 95);--primary:oklch(0.72 0.16 145);--primary-fg:oklch(0.18 0.04 150);--primary-glow:oklch(0.78 0.18 140);--secondary:oklch(0.26 0.03 150);--secondary-fg:oklch(0.96 0.015 95);--muted:oklch(0.26 0.03 150);--muted-fg:oklch(0.72 0.02 100);--accent:oklch(0.78 0.14 80);--accent-fg:oklch(0.18 0.04 150);--cream:oklch(0.26 0.03 150);--destructive:oklch(0.65 0.2 25);--border:oklch(1 0 0/12%);--shadow-soft:0 1px 2px oklch(0 0 0/0.3),0 8px 24px oklch(0 0 0/0.2);--shadow-leaf:0 20px 60px -20px oklch(0.45 0.13 150/0.5);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-s);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-d);letter-spacing:-0.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+img{display:block;max-width:100%}
+input,textarea,select{font-family:inherit}
+ul{list-style:none}
+.gl{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-glow) 100%)}
+.tg{background:linear-gradient(135deg,var(--primary),var(--primary-glow));-webkit-background-clip:text;background-clip:text;color:transparent}
+.shadow-leaf{box-shadow:var(--shadow-leaf)}
+.shadow-soft{box-shadow:var(--shadow-soft)}
+.glass{background:oklch(1 0 0/0.75);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%)}
+[data-theme="dark"] .glass{background:oklch(0.18 0.025 150/0.85)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 1.5rem}
+@media(min-width:640px){.wrap{padding:0 2rem}}
+@media(min-width:1024px){.wrap{padding:0 2.5rem}}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--primary);font-weight:700}
+.hide-sm{display:none}
+@media(min-width:640px){.hide-sm{display:flex}}
+.rev{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.rev.in{opacity:1;transform:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes toastOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(8px) scale(.95)}}
+
+#hdr{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);transition:box-shadow .3s;background:var(--bg)}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;height:4rem;gap:.5rem}
+.logo{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.logo-icon{width:2.25rem;height:2.25rem;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.logo:hover .logo-icon{transform:rotate(-12deg) scale(1.1)}
+.logo-txt{font-family:var(--font-d);font-size:1.35rem;font-weight:700}
+.logo-txt span{background:linear-gradient(135deg,var(--primary),var(--primary-glow));-webkit-background-clip:text;background-clip:text;color:transparent}
+.desk-nav{display:flex;align-items:center;gap:.25rem}
+@media(max-width:768px){.desk-nav{display:none}}
+.nav-a{position:relative;padding:.5rem 1rem;font-size:.875rem;font-weight:500;color:var(--muted-fg);transition:color .2s;border-radius:9999px}
+.nav-a:hover,.nav-a.active{color:var(--fg)}
+.nav-a.active::after{content:"";position:absolute;bottom:0;left:.75rem;right:.75rem;height:2px;border-radius:9999px;background:var(--primary)}
+.hdr-actions{display:flex;align-items:center;gap:.25rem}
+.ic-btn{width:2.5rem;height:2.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--fg);transition:background .2s;position:relative}
+.ic-btn:hover{background:var(--muted)}
+.ic-btn svg{width:1.25rem;height:1.25rem}
+.ic-badge{position:absolute;top:-2px;right:-2px;min-width:1rem;height:1rem;border-radius:9999px;background:var(--accent);color:var(--accent-fg);font-size:.625rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 2px;display:none}
+.ic-badge.show{display:flex}
+.cart-btn{display:flex;align-items:center;gap:.5rem;background:var(--primary);color:var(--primary-fg);border-radius:9999px;padding:0 1rem;height:2.5rem;font-size:.875rem;font-weight:700;transition:box-shadow .25s var(--ease),background .2s;position:relative}
+.cart-btn:hover{box-shadow:var(--shadow-leaf)}
+.cart-btn svg{width:1rem;height:1rem}
+.cart-b{position:absolute;top:-4px;right:-4px;min-width:1rem;height:1rem;border-radius:50%;background:var(--accent);color:var(--accent-fg);font-size:.6875rem;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 3px}
+.cart-b.show{display:flex}
+.drop{position:relative}
+.drop-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:10rem;background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow-soft);padding:.375rem;z-index:100;animation:slideDown .2s both;display:none}
+.drop.open .drop-menu{display:block}
+.drop-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.625rem;font-size:.875rem;color:var(--fg);cursor:pointer;transition:background .15s}
+.drop-item:hover,.drop-item.active{background:var(--muted)}
+.drop-item.active{font-weight:700}
+.mob-btn{display:none}
+@media(max-width:768px){.mob-btn{display:flex}}
+#mob-nav{display:none;border-top:1px solid var(--border);animation:slideDown .2s both}
+#mob-nav.open{display:block}
+.mob-links{padding:.75rem 0;display:flex;flex-direction:column;gap:.25rem}
+.mob-a{display:block;padding:.625rem .75rem;border-radius:.625rem;font-size:.875rem;font-weight:500;transition:background .15s}
+.mob-a:hover,.mob-a.active{background:var(--muted)}
+
+/* FAQ Page */
+.faq-hero{padding:4rem 0 2rem;max-width:48rem}
+.faq-hero h1{font-family:var(--font-d);font-size:clamp(2rem,5vw,3rem);font-weight:700;margin-top:.5rem}
+.faq-hero p{margin-top:.5rem;color:var(--muted-fg)}
+.faq-search{margin:2rem 0}
+.faq-search input{width:100%;padding:1rem;border-radius:9999px;border:1px solid var(--border);background:var(--card);color:var(--fg);font-size:.875rem;outline:none}
+.faq-search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in oklch,var(--primary) 15%,transparent)}
+.faq-categories{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.faq-cat-btn{padding:.5rem 1rem;border-radius:9999px;border:1px solid var(--border);background:var(--card);font-size:.875rem;cursor:pointer;transition:all .2s}
+.faq-cat-btn:hover{background:var(--muted)}
+.faq-cat-btn.active{background:var(--primary);color:var(--primary-fg);border-color:var(--primary)}
+.faq-items{display:flex;flex-direction:column;gap:1rem}
+.faq-item{background:var(--card);border-radius:1.25rem;border:1px solid var(--border);overflow:hidden}
+.faq-question{width:100%;display:flex;justify-content:space-between;align-items:center;padding:1.25rem;text-align:left;cursor:pointer;transition:background .15s}
+.faq-question:hover{background:color-mix(in oklch,var(--muted) 40%,transparent)}
+.faq-question .question-text{font-weight:700}
+.faq-question .arrow{width:1.25rem;height:1.25rem;color:var(--muted-fg);transition:transform .3s}
+.faq-question.open .arrow{transform:rotate(180deg)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .35s var(--ease)}
+.faq-answer.open{max-height:20rem}
+.faq-answer p{padding:0 1.25rem 1.25rem;font-size:.875rem;color:var(--muted-fg);line-height:1.7}
+.contact-cta{margin-top:3rem;text-align:center;padding:2rem;background:var(--card);border-radius:1.5rem;border:1px solid var(--border)}
+.contact-cta p{margin-bottom:1rem}
+
+footer{margin-top:6rem;border-top:1px solid var(--border);background:color-mix(in oklch,var(--muted) 40%,transparent)}
+.ft-inner{padding:3.5rem 0}
+.ft-grid{display:grid;gap:2.5rem}
+@media(min-width:768px){.ft-grid{grid-template-columns:5fr 2fr 2fr 3fr}}
+.ft-brand p{margin-top:.75rem;max-width:28rem;font-size:.875rem;color:var(--muted-fg);line-height:1.65}
+.ft-nl{margin-top:1.25rem}
+.ft-nl-form{display:flex;flex-direction:column;gap:.5rem;max-width:22rem}
+@media(min-width:480px){.ft-nl-form{flex-direction:row}}
+.ft-nl-inp{flex:1;height:2.75rem;border-radius:9999px;border:1px solid var(--border);background:var(--bg);padding:0 1rem;color:var(--fg);font-family:var(--font-s);font-size:.875rem;outline:none}
+.ft-nl-inp:focus{border-color:var(--primary)}
+.ft-nl-btn{height:2.75rem;border-radius:9999px;padding:0 1.25rem;background:var(--primary);color:var(--primary-fg);font-weight:700;font-size:.875rem;flex-shrink:0;transition:box-shadow .2s;cursor:pointer}
+.ft-nl-btn:hover{box-shadow:var(--shadow-leaf)}
+.ft-soc{margin-top:1.25rem;display:flex;gap:.5rem}
+.soc-btn{width:2.25rem;height:2.25rem;border-radius:50%;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center}
+.soc-btn:hover{background:var(--muted)}
+.soc-btn svg{width:1rem;height:1rem}
+.ft-col h4{font-family:var(--font-d);font-size:.875rem;font-weight:700}
+.ft-col ul{margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem}
+.ft-col ul a{font-size:.875rem;color:var(--muted-fg);transition:color .15s}
+.ft-col ul a:hover{color:var(--fg)}
+.ft-bot{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;font-size:.75rem;color:var(--muted-fg)}
+
+#toast-c{position:fixed;bottom:1.5rem;right:1.5rem;z-index:1000;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+.toast{display:flex;align-items:center;gap:.75rem;background:var(--card);border:1px solid var(--border);border-radius:.875rem;padding:.875rem 1.25rem;box-shadow:var(--shadow-soft);font-size:.875rem;font-weight:500;pointer-events:auto;animation:toastIn .3s var(--ease) both;max-width:22rem}
+.toast.out{animation:toastOut .3s var(--ease) both}
+.toast-ic{width:1.5rem;height:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.toast-ic.s{background:var(--primary);color:var(--primary-fg)}
+.toast-ic.e{background:var(--destructive);color:#fff}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;animation:fadeIn .2s both}
+.modal-content{background:var(--card);border-radius:1.5rem;padding:2rem;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;animation:scaleIn .2s both}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.modal-close{width:2rem;height:2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.25rem;cursor:pointer}
+.modal-close:hover{background:var(--muted)}
+.btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--primary);color:var(--primary-fg);border-radius:9999px;padding:.875rem 1.5rem;font-size:.875rem;font-weight:700;transition:box-shadow .25s var(--ease),transform .2s}
+.btn-p:hover{box-shadow:var(--shadow-leaf);transform:translateY(-1px)}
+.btn-s{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--border);background:color-mix(in oklch,var(--bg) 70%,transparent);backdrop-filter:blur(8px);border-radius:9999px;padding:.875rem 1.5rem;font-size:.875rem;font-weight:700}
+.btn-s:hover{background:var(--bg)}
+.auth-field{margin-bottom:1rem}
+.auth-lbl{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-fg);display:block;margin-bottom:.375rem}
+.auth-inp{width:100%;padding:.75rem;border-radius:.75rem;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:.875rem;outline:none}
+.auth-inp:focus{border-color:var(--primary)}
+</style>
+</head>
+<body>
+
+<div id="toast-c"></div>
+
+<!-- Header -->
+<header id="hdr" class="glass">
+  <div class="wrap">
+    <div class="hdr-inner">
+      <a href="index.html" class="logo"><div class="logo-icon gl"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div><span class="logo-txt">Eco<span>Store</span></span></a>
+      <nav class="desk-nav"><a href="index.html" class="nav-a">Home</a><a href="shop.html" class="nav-a">Shop</a><a href="sellers.html" class="nav-a">Sell</a><a href="admin.html" class="nav-a" id="admin-nav-link" style="display:none">Admin</a><a href="learn.html" class="nav-a">Learn</a></nav>
+      <div class="hdr-actions">
+        <button class="ic-btn hide-sm" onclick="window.location.href='shop.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+        <button class="ic-btn hide-sm" onclick="window.location.href='wishlist.html'" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="ic-badge" id="wish-badge">0</span></button>
+        <button class="ic-btn hide-sm" id="auth-btn" onclick="handleAuthClick()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+        <div class="drop" id="drop-lang"><button class="ic-btn" onclick="toggleDrop('drop-lang')"><span id="lang-flag" style="font-size:1rem;line-height:1">🇬🇧</span></button><div class="drop-menu"><div class="drop-item active" onclick="setLang('en','🇬🇧','English')">🇬🇧 English</div><div class="drop-item" onclick="setLang('sw','🇹🇿','Kiswahili')">🇹🇿 Kiswahili</div><div class="drop-item" onclick="setLang('fr','🇫🇷','Français')">🇫🇷 Français</div><div class="drop-item" onclick="setLang('es','🇪🇸','Español')">🇪🇸 Español</div><div class="drop-item" onclick="setLang('ar','🇸🇦','العربية')">🇸🇦 العربية</div></div></div>
+        <div class="drop" id="drop-theme"><button class="ic-btn" onclick="toggleDrop('drop-theme')"><svg id="th-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg id="th-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button><div class="drop-menu"><div class="drop-item active" onclick="setTheme('light')">☀️ Light</div><div class="drop-item" onclick="setTheme('dark')">🌙 Dark</div><div class="drop-item" onclick="setTheme('system')">💻 System</div></div></div>
+        <button class="cart-btn" onclick="window.location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-b" id="cart-badge">0</span></button>
+        <button class="ic-btn mob-btn" onclick="toggleMob()"><svg id="mob-menu-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg><svg id="mob-x-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div id="mob-nav"><div class="mob-links"><a href="index.html" class="mob-a">Home</a><a href="shop.html" class="mob-a">Shop</a><a href="sellers.html" class="mob-a">Sell</a><a href="admin.html" class="mob-a" id="mob-admin-link" style="display:none">Admin</a><a href="learn.html" class="mob-a">Learn</a><a href="account.html" class="mob-a" id="mob-account-link" style="display:none">Account</a><a href="wishlist.html" class="mob-a">Wishlist</a><a href="#" class="mob-a" id="mob-auth-link" onclick="handleAuthClick();return false;">Sign In</a></div></div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main>
+  <div class="wrap">
+    <div class="faq-hero">
+      <div class="eyebrow">Help center</div>
+      <h1>Frequently asked.</h1>
+      <p>Everything you need to know about EcoStore</p>
+    </div>
+    <div class="faq-search"><input type="text" id="faq-search" placeholder="Search for answers..." oninput="filterFaqs()"></div>
+    <div class="faq-categories" id="faq-categories"><button class="faq-cat-btn active" data-cat="all" onclick="filterByCategory('all')">All</button><button class="faq-cat-btn" data-cat="orders" onclick="filterByCategory('orders')">Orders</button><button class="faq-cat-btn" data-cat="products" onclick="filterByCategory('products')">Products</button><button class="faq-cat-btn" data-cat="account" onclick="filterByCategory('account')">Account</button><button class="faq-cat-btn" data-cat="sustainability" onclick="filterByCategory('sustainability')">Sustainability</button><button class="faq-cat-btn" data-cat="shipping" onclick="filterByCategory('shipping')">Shipping</button><button class="faq-cat-btn" data-cat="payment" onclick="filterByCategory('payment')">Payment</button></div>
+    <div class="faq-items" id="faq-items"></div>
+    <div class="contact-cta"><p>Still have questions? We're here to help.</p><a href="contact.html" class="btn-p">Contact Support →</a></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap ft-inner">
+    <div class="ft-grid">
+      <div class="ft-brand"><a href="index.html" class="logo" style="margin-bottom:.75rem;display:inline-flex"><div class="logo-icon gl" style="width:2rem;height:2rem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--primary-fg)"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg></div><span class="logo-txt" style="font-size:1.25rem">EcoStore</span></a><p>The trusted marketplace for verified sustainable goods.</p><div class="ft-nl"><form class="ft-nl-form" onsubmit="subscribeNewsletter(event, 'ft-nl-email')"><input class="ft-nl-inp" type="email" id="ft-nl-email" placeholder="you@earth.com" required/><button class="ft-nl-btn" type="submit">Subscribe</button></form></div><div class="ft-soc"><a href="#" class="soc-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a><a href="#" class="soc-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a><a href="#" class="soc-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a></div></div>
+      <div class="ft-col"><h4>Shop</h4><ul><li><a href="shop.html">Shop</a></li><li><a href="wishlist.html">Wishlist</a></li><li><a href="cart.html">Cart</a></li><li><a href="orders.html">Orders</a></li></ul></div>
+      <div class="ft-col"><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="sellers.html">Sell</a></li><li><a href="learn.html">Learn</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="ft-col"><h4>Help</h4><ul><li><a href="faq.html">FAQ</a></li><li><a href="account.html">My account</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li></ul></div>
+    </div>
+    <div class="ft-bot"><span>© <span id="year"></span> EcoStore. Grown with care.</span><span>Carbon-neutral shipping • B-Corp pending</span></div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// FAQ PAGE - FULLY CONNECTED TO BACKEND
+// ============================================================
+
+// API Base - DETECTS CORRECT PATH
+function getApiBase() {
+    var path = window.location.pathname.replace(/\\/g, '/');
+    var frontendIndex = path.indexOf('/frontend/');
+    if (frontendIndex !== -1) {
+        return window.location.origin + path.slice(0, frontendIndex) + '/backend/api/';
+    }
+    return window.location.origin + '/works2/backend/api/';
+}
+
+var API_BASE = getApiBase();
+console.log('FAQ API Base URL:', API_BASE);
+
+// State
+var currentUser = null;
+var cart = [];
+var wishlist = [];
+var currentCategory = 'all';
+var searchQuery = '';
+
+// FAQ Data
+var faqs = [
+    {q:"How are products eco-certified?",a:"Our team reviews each seller's materials, supply chain, and certifications before approving any listing. We verify organic certifications, recycled content, biodegradability claims, and ethical production standards.",cat:"products"},
+    {q:"Where do you ship?",a:"We ship across East Africa with carbon-neutral courier partners (DHL, Aramex, and local eco-logistics), and globally via DHL GoGreen. Delivery times: 2-5 days within Tanzania, 5-10 days for East Africa, 10-20 days internationally.",cat:"shipping"},
+    {q:"What payment methods are accepted?",a:"We accept M-Pesa, Tigo Pesa, Airtel Money, and major debit/credit cards (Visa, Mastercard, Amex). All payments are processed securely.",cat:"payment"},
+    {q:"What is the return policy?",a:"30-day no-questions returns. If you're not completely satisfied, we'll arrange a free return. Returned packaging is reused or composted — we never send anything to landfill.",cat:"orders"},
+    {q:"How is carbon saved calculated?",a:"We compare the lifetime emissions of each product against its conventional plastic equivalent. Our algorithm considers production, transportation, usage, and disposal phases.",cat:"sustainability"},
+    {q:"How do I become a seller?",a:"Apply via the Sell page — submit your eco-certifications and tell us about your sustainability practices. Our team reviews applications within 48 hours.",cat:"account"},
+    {q:"Can I track my order?",a:"Yes! Once your order ships, you'll receive a tracking number via email. You can also track all your orders in the Orders section of your account.",cat:"orders"},
+    {q:"What is EcoScore?",a:"EcoScore is our proprietary sustainability rating (1-10) that evaluates products based on materials, production process, packaging, carbon footprint, and end-of-life disposal.",cat:"products"},
+    {q:"How do I reset my password?",a:"Click 'Forgot Password' on the login page. We'll email you a secure link to reset your password. The link expires after 1 hour for security.",cat:"account"},
+    {q:"Do you offer gift cards?",a:"Coming soon! We're launching digital gift cards next month. Sign up for our newsletter to get notified.",cat:"payment"},
+    {q:"What packaging materials do you use?",a:"We use 100% plastic-free packaging — recycled cardboard boxes, paper tape, and compostable padding. All materials are recyclable or home-compostable.",cat:"sustainability"},
+    {q:"How do I contact customer support?",a:"Email us at hello@ecostore.com, call +255 700 000 000, or use our contact form. We reply within 24 hours.",cat:"account"}
+];
+
+// ==================== FAQ FUNCTIONS ====================
+function renderFaqs() {
+    var container = document.getElementById('faq-items');
+    if (!container) return;
+    
+    var filtered = faqs;
+    if (currentCategory !== 'all') {
+        filtered = filtered.filter(function(f) { return f.cat === currentCategory; });
+    }
+    if (searchQuery) {
+        var query = searchQuery.toLowerCase();
+        filtered = filtered.filter(function(f) {
+            return f.q.toLowerCase().includes(query) || f.a.toLowerCase().includes(query);
+        });
+    }
+    
+    container.innerHTML = filtered.map(function(f, i) {
+        return '<div class="faq-item" data-cat="' + f.cat + '">' +
+            '<button class="faq-question" onclick="toggleFaq(this)">' +
+                '<span class="question-text">' + f.q + '</span>' +
+                '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                    '<polyline points="6 9 12 15 18 9"/>' +
+                '</svg>' +
+            '</button>' +
+            '<div class="faq-answer"><p>' + f.a + '</p></div>' +
+        '</div>';
+    }).join('');
+    
+    setTimeout(initReveal, 100);
+}
+
+function toggleFaq(btn) {
+    btn.classList.toggle('open');
+    var answer = btn.nextElementSibling;
+    answer.classList.toggle('open');
+}
+
+function filterByCategory(cat) {
+    currentCategory = cat;
+    var btns = document.querySelectorAll('.faq-cat-btn');
+    for (var i = 0; i < btns.length; i++) {
+        var btn = btns[i];
+        if (btn.dataset.cat === cat) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    }
+    renderFaqs();
+}
+
+function filterFaqs() {
+    var searchInput = document.getElementById('faq-search');
+    searchQuery = searchInput ? searchInput.value.toLowerCase() : '';
+    renderFaqs();
+}
+
+// ==================== HELPER FUNCTIONS ====================
+function showToast(msg, type) {
+    type = type || 'success';
+    var c = document.getElementById('toast-c');
+    if (!c) return;
+    var t = document.createElement('div');
+    t.className = 'toast';
+    var icon = type === 'success' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    t.innerHTML = '<div class="toast-ic ' + (type === 'success' ? 's' : 'e') + '">' + icon + '</div><span>' + msg + '</span>';
+    c.appendChild(t);
+    setTimeout(function() { t.classList.add('out'); setTimeout(function() { t.remove(); }, 300); }, 3000);
+}
+
+// ==================== CART FUNCTIONS ====================
+function saveCart() { localStorage.setItem('eco_cart', JSON.stringify(cart)); }
+function cartCount() { return cart.reduce(function(n, i) { return n + (i.qty || 1); }, 0); }
+function updateCartBadge() {
+    var count = cartCount();
+    var badge = document.getElementById('cart-badge');
+    if (badge) { badge.textContent = count; if (count > 0) badge.classList.add('show'); else badge.classList.remove('show'); }
+}
+function loadCart() { var s = localStorage.getItem('eco_cart'); if (s) { cart = JSON.parse(s); updateCartBadge(); } }
+
+// ==================== WISHLIST FUNCTIONS ====================
+function loadWishlist() { var s = localStorage.getItem('eco_wishlist'); if (s) { wishlist = JSON.parse(s); updateWishlistBadge(); } }
+function updateWishlistBadge() { var b = document.getElementById('wish-badge'); if (b) { b.textContent = wishlist.length; if (wishlist.length > 0) b.classList.add('show'); else b.classList.remove('show'); } }
+
+// ==================== AUTH FUNCTIONS ====================
+function handleAuthClick() {
+    if (currentUser) {
+        window.location.href = 'account.html';
+    } else {
+        window.location.href = 'login.html';
+    }
+}
+
+async function login(email, password) {
+    try {
+        var response = await fetch(API_BASE + 'auth.php?action=login', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, password: password })
+        });
+        var data = await response.json();
+        if (data.success) {
+            currentUser = data.user; localStorage.setItem('eco_user', JSON.stringify(currentUser));
+            updateAuthUI(); showToast(data.message, 'success'); closeModal(); window.location.reload();
+        } else showToast(data.message, 'error');
+        return data;
+    } catch (error) { showToast('Network error', 'error'); return { success: false }; }
+}
+
+async function register(name, email, password, phone, address) {
+    try {
+        var response = await fetch(API_BASE + 'auth.php?action=register', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, email: email, password: password, phone: phone, address: address })
+        });
+        var data = await response.json();
+        if (data.success) {
+            currentUser = data.user; localStorage.setItem('eco_user', JSON.stringify(currentUser));
+            updateAuthUI(); showToast(data.message, 'success'); closeModal(); window.location.reload();
+        } else showToast(data.message, 'error');
+        return data;
+    } catch (error) { showToast('Network error', 'error'); return { success: false }; }
+}
+
+function updateAuthUI() {
+    var authBtn = document.getElementById('auth-btn');
+    var adminNav = document.getElementById('admin-nav-link');
+    var mobAdminNav = document.getElementById('mob-admin-link');
+    var mobAccountLink = document.getElementById('mob-account-link');
+    var mobAuthLink = document.getElementById('mob-auth-link');
+    
+    if (currentUser) {
+        if (authBtn) {
+            authBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+            authBtn.onclick = function() { window.location.href = 'account.html'; };
+            authBtn.title = currentUser.name;
+        }
+        if (currentUser.role === 'admin') {
+            if (adminNav) adminNav.style.display = 'inline-block';
+            if (mobAdminNav) mobAdminNav.style.display = 'block';
+        } else {
+            if (adminNav) adminNav.style.display = 'none';
+            if (mobAdminNav) mobAdminNav.style.display = 'none';
+        }
+        if (mobAccountLink) {
+            mobAccountLink.style.display = 'block';
+            mobAccountLink.href = 'account.html';
+            mobAccountLink.textContent = 'My Account';
+        }
+        if (mobAuthLink) mobAuthLink.style.display = 'none';
+    } else {
+        if (authBtn) {
+            authBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+            authBtn.onclick = function() { window.location.href = 'login.html'; };
+            authBtn.title = 'Sign In';
+        }
+        if (adminNav) adminNav.style.display = 'none';
+        if (mobAdminNav) mobAdminNav.style.display = 'none';
+        if (mobAccountLink) mobAccountLink.style.display = 'none';
+        if (mobAuthLink) {
+            mobAuthLink.style.display = 'block';
+            mobAuthLink.textContent = 'Sign In';
+            mobAuthLink.onclick = function() { window.location.href = 'login.html'; return false; };
+        }
+    }
+}
+
+function showAuthModal() {
+    var modalHtml = '<div id="auth-modal" class="modal-overlay" onclick="closeModal(event)"><div class="modal-content" onclick="event.stopPropagation()"><div class="modal-header"><h2>Welcome to EcoStore</h2><button class="modal-close" onclick="closeModal()">✕</button></div><div style="display:flex; gap:1rem; margin-bottom:1.5rem;"><button class="btn-p" style="flex:1; text-align:center;" onclick="showLoginForm()">Sign In</button><button class="btn-s" style="flex:1; text-align:center;" onclick="showRegisterForm()">Register</button></div><div id="auth-form-container">' + getLoginForm() + '</div></div></div>';
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function getLoginForm() { return '<form onsubmit="event.preventDefault(); login(document.getElementById(\'login-email\').value, document.getElementById(\'login-password\').value)"><div class="auth-field"><label class="auth-lbl">Email</label><input class="auth-inp" type="email" id="login-email" placeholder="you@earth.com" required></div><div class="auth-field"><label class="auth-lbl">Password</label><input class="auth-inp" type="password" id="login-password" placeholder="••••••••" required></div><button type="submit" class="btn-p" style="width:100%;">Sign In</button></form><p style="margin-top:1rem; text-align:center; font-size:0.875rem;">New here? <a href="#" onclick="showRegisterForm(); return false;">Create an account</a></p>'; }
+function getRegisterForm() { return '<form onsubmit="event.preventDefault(); register(document.getElementById(\'reg-name\').value, document.getElementById(\'reg-email\').value, document.getElementById(\'reg-password\').value, document.getElementById(\'reg-phone\').value, document.getElementById(\'reg-address\').value)"><div class="auth-field"><label class="auth-lbl">Full Name</label><input class="auth-inp" type="text" id="reg-name" placeholder="Jane Forest" required></div><div class="auth-field"><label class="auth-lbl">Email</label><input class="auth-inp" type="email" id="reg-email" placeholder="you@earth.com" required></div><div class="auth-field"><label class="auth-lbl">Password (min 6 chars)</label><input class="auth-inp" type="password" id="reg-password" placeholder="••••••••" required minlength="6"></div><div class="auth-field"><label class="auth-lbl">Phone (optional)</label><input class="auth-inp" type="tel" id="reg-phone" placeholder="+255..."></div><div class="auth-field"><label class="auth-lbl">Address (optional)</label><textarea id="reg-address" class="auth-inp" placeholder="Your address" style="min-height:80px;"></textarea></div><button type="submit" class="btn-p" style="width:100%;">Create Account</button></form><p style="margin-top:1rem; text-align:center; font-size:0.875rem;">Already have an account? <a href="#" onclick="showLoginForm(); return false;">Sign In</a></p>'; }
+function showLoginForm() { var c = document.getElementById('auth-form-container'); if (c) c.innerHTML = getLoginForm(); }
+function showRegisterForm() { var c = document.getElementById('auth-form-container'); if (c) c.innerHTML = getRegisterForm(); }
+function closeModal(e) { if (e && e.target !== e.currentTarget && e.target !== document.getElementById('auth-modal')) return; var m = document.getElementById('auth-modal'); if (m) m.remove(); }
+
+function checkAuthStatus() {
+    var u = localStorage.getItem('eco_user');
+    if (u) { currentUser = JSON.parse(u); updateAuthUI(); }
+    else { currentUser = null; updateAuthUI(); }
+}
+
+// ==================== NEWSLETTER ====================
+async function subscribeNewsletter(e, inputId) {
+    e.preventDefault();
+    var inp = document.getElementById(inputId);
+    if (!inp || !inp.value.includes('@')) { showToast('Please enter a valid email', 'error'); return; }
+    try {
+        var response = await fetch(API_BASE + 'contact.php?action=newsletter', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: inp.value })
+        });
+        var data = await response.json();
+        showToast(data.message, data.success ? 'success' : 'error');
+        if (data.success) inp.value = '';
+    } catch (error) { showToast('Subscription failed', 'error'); }
+}
+
+// ==================== THEME & LANGUAGE ====================
+function setTheme(mode) {
+    var html = document.documentElement;
+    var theme = mode;
+    if (mode === 'system') theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem('eco_theme', mode);
+    var sun = document.getElementById('th-sun'), moon = document.getElementById('th-moon');
+    if (sun && moon) {
+        if (theme === 'dark') { sun.style.display = 'none'; moon.style.display = ''; }
+        else { sun.style.display = ''; moon.style.display = 'none'; }
+    }
+    closeAllDropdowns();
+}
+function setLang(code, flag, label) {
+    var langFlag = document.getElementById('lang-flag');
+    if (langFlag) langFlag.textContent = flag;
+    localStorage.setItem('eco_lang', code);
+    closeAllDropdowns();
+    showToast('Language: ' + label, 'success');
+}
+function toggleDrop(id) {
+    var dropdown = document.getElementById(id);
+    if (!dropdown) return;
+    var wasOpen = dropdown.classList.contains('open');
+    closeAllDropdowns();
+    if (!wasOpen) dropdown.classList.add('open');
+}
+function closeAllDropdowns() {
+    var drops = document.querySelectorAll('.drop');
+    for (var i = 0; i < drops.length; i++) drops[i].classList.remove('open');
+}
+function toggleMob() {
+    var mobNav = document.getElementById('mob-nav');
+    var menuIcon = document.getElementById('mob-menu-ic');
+    var xIcon = document.getElementById('mob-x-ic');
+    if (!mobNav) return;
+    var isOpen = mobNav.classList.contains('open');
+    if (isOpen) {
+        mobNav.classList.remove('open');
+        if (menuIcon) menuIcon.style.display = '';
+        if (xIcon) xIcon.style.display = 'none';
+    } else {
+        mobNav.classList.add('open');
+        if (menuIcon) menuIcon.style.display = 'none';
+        if (xIcon) xIcon.style.display = '';
+    }
+}
+function initReveal() {
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08 });
+    var revElements = document.querySelectorAll('.rev');
+    for (var i = 0; i < revElements.length; i++) {
+        if (!revElements[i].classList.contains('in')) observer.observe(revElements[i]);
+    }
+}
+
+// ==================== INITIALIZATION ====================
+document.getElementById('year').textContent = new Date().getFullYear();
+setTheme(localStorage.getItem('eco_theme') || 'light');
+var langMap = { en: ['🇬🇧', 'English'], sw: ['🇹🇿', 'Kiswahili'], fr: ['🇫🇷', 'Français'], es: ['🇪🇸', 'Español'], ar: ['🇸🇦', 'العربية'] };
+var savedLang = localStorage.getItem('eco_lang') || 'en';
+if (langMap[savedLang]) setLang(savedLang, langMap[savedLang][0], langMap[savedLang][1]);
+
+loadCart();
+loadWishlist();
+checkAuthStatus();
+renderFaqs();
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.drop')) closeAllDropdowns();
+});
+window.addEventListener('scroll', function() {
+    var header = document.getElementById('hdr');
+    if (header) header.style.boxShadow = window.scrollY > 10 ? 'var(--shadow-soft)' : '';
+});
+setTimeout(initReveal, 300);
+</script>
+</body>
+</html>

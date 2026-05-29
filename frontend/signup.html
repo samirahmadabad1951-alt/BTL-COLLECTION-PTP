@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<!-- works2/frontend/signup.html -->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Create Account — EcoStore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet"/>
+<style>
+/* ===================== YOUR ORIGINAL CSS - COMPLETE ===================== */
+:root{
+  --radius:1rem;
+  --bg:oklch(0.98 0.012 95);--fg:oklch(0.22 0.04 150);
+  --card:oklch(1 0 0);--card-fg:oklch(0.22 0.04 150);
+  --primary:oklch(0.42 0.12 150);--primary-fg:oklch(0.98 0.012 95);--primary-glow:oklch(0.62 0.16 145);
+  --secondary:oklch(0.94 0.025 100);--secondary-fg:oklch(0.25 0.05 150);
+  --muted:oklch(0.95 0.018 100);--muted-fg:oklch(0.45 0.03 150);
+  --accent:oklch(0.78 0.14 80);--accent-fg:oklch(0.22 0.05 150);
+  --cream:oklch(0.96 0.02 90);--destructive:oklch(0.55 0.2 25);
+  --border:oklch(0.88 0.02 100);
+  --shadow-soft:0 1px 2px oklch(0.3 0.05 150/0.06),0 8px 24px oklch(0.3 0.05 150/0.06);
+  --shadow-leaf:0 20px 60px -20px oklch(0.45 0.13 150/0.35);
+  --font-d:"Fraunces",ui-serif,Georgia,serif;
+  --font-s:"DM Sans",ui-sans-serif,system-ui,sans-serif;
+  --ease:cubic-bezier(0.22,1,0.36,1);
+}
+[data-theme="dark"]{
+  --bg:oklch(0.18 0.025 150);--fg:oklch(0.96 0.015 95);
+  --card:oklch(0.22 0.03 150);--card-fg:oklch(0.96 0.015 95);
+  --primary:oklch(0.72 0.16 145);--primary-fg:oklch(0.18 0.04 150);--primary-glow:oklch(0.78 0.18 140);
+  --secondary:oklch(0.26 0.03 150);--secondary-fg:oklch(0.96 0.015 95);
+  --muted:oklch(0.26 0.03 150);--muted-fg:oklch(0.72 0.02 100);
+  --accent:oklch(0.78 0.14 80);--accent-fg:oklch(0.18 0.04 150);
+  --cream:oklch(0.26 0.03 150);--destructive:oklch(0.65 0.2 25);
+  --border:oklch(1 0 0/12%);
+  --shadow-soft:0 1px 2px oklch(0 0 0/0.3),0 8px 24px oklch(0 0 0/0.2);
+  --shadow-leaf:0 20px 60px -20px oklch(0.45 0.13 150/0.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-s);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-d);letter-spacing:-0.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+img{display:block;max-width:100%}
+input,textarea,select{font-family:inherit}
+ul{list-style:none}
+.gl{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-glow) 100%)}
+.tg{background:linear-gradient(135deg,var(--primary),var(--primary-glow));-webkit-background-clip:text;background-clip:text;color:transparent}
+.shadow-leaf{box-shadow:var(--shadow-leaf)}
+.shadow-soft{box-shadow:var(--shadow-soft)}
+.glass{background:oklch(1 0 0/0.75);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%)}
+[data-theme="dark"] .glass{background:oklch(0.18 0.025 150/0.85)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 1.5rem}
+@media(min-width:640px){.wrap{padding:0 2rem}}
+@media(min-width:1024px){.wrap{padding:0 2.5rem}}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--primary);font-weight:700}
+.hide-sm{display:none}
+@media(min-width:640px){.hide-sm{display:flex}}
+.rev{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.rev.in{opacity:1;transform:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes toastOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(8px) scale(.95)}}
+
+/* Header */
+#hdr{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);transition:box-shadow .3s;background:var(--bg)}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;height:4rem;gap:.5rem}
+.logo{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.logo-icon{width:2.25rem;height:2.25rem;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.logo:hover .logo-icon{transform:rotate(-12deg) scale(1.1)}
+.logo-txt{font-family:var(--font-d);font-size:1.35rem;font-weight:700}
+.logo-txt span{background:linear-gradient(135deg,var(--primary),var(--primary-glow));-webkit-background-clip:text;background-clip:text;color:transparent}
+.desk-nav{display:flex;align-items:center;gap:.25rem}
+@media(max-width:768px){.desk-nav{display:none}}
+.nav-a{position:relative;padding:.5rem 1rem;font-size:.875rem;font-weight:500;color:var(--muted-fg);transition:color .2s;border-radius:9999px}
+.nav-a:hover,.nav-a.active{color:var(--fg)}
+.nav-a.active::after{content:"";position:absolute;bottom:0;left:.75rem;right:.75rem;height:2px;border-radius:9999px;background:var(--primary)}
+.hdr-actions{display:flex;align-items:center;gap:.25rem}
+.ic-btn{width:2.5rem;height:2.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--fg);transition:background .2s;position:relative}
+.ic-btn:hover{background:var(--muted)}
+.ic-btn svg{width:1.25rem;height:1.25rem}
+.ic-badge{position:absolute;top:-2px;right:-2px;min-width:1rem;height:1rem;border-radius:9999px;background:var(--accent);color:var(--accent-fg);font-size:.625rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 2px;display:none}
+.ic-badge.show{display:flex}
+.cart-btn{display:flex;align-items:center;gap:.5rem;background:var(--primary);color:var(--primary-fg);border-radius:9999px;padding:0 1rem;height:2.5rem;font-size:.875rem;font-weight:700;transition:box-shadow .25s var(--ease),background .2s;position:relative}
+.cart-btn:hover{box-shadow:var(--shadow-leaf)}
+.cart-btn svg{width:1rem;height:1rem}
+.cart-b{position:absolute;top:-4px;right:-4px;min-width:1rem;height:1rem;border-radius:50%;background:var(--accent);color:var(--accent-fg);font-size:.6875rem;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 3px}
+.cart-b.show{display:flex}
+.drop{position:relative}
+.drop-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:10rem;background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow-soft);padding:.375rem;z-index:100;animation:slideDown .2s both;display:none}
+.drop.open .drop-menu{display:block}
+.drop-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border-radius:.625rem;font-size:.875rem;color:var(--fg);cursor:pointer;transition:background .15s}
+.drop-item:hover,.drop-item.active{background:var(--muted)}
+.drop-item.active{font-weight:700}
+.mob-btn{display:none}
+@media(max-width:768px){.mob-btn{display:flex}}
+#mob-nav{display:none;border-top:1px solid var(--border);animation:slideDown .2s both}
+#mob-nav.open{display:block}
+.mob-links{padding:.75rem 0;display:flex;flex-direction:column;gap:.25rem}
+.mob-a{display:block;padding:.625rem .75rem;border-radius:.625rem;font-size:.875rem;font-weight:500;transition:background .15s}
+.mob-a:hover,.mob-a.active{background:var(--muted)}
+
+.auth-wrap{max-width:28rem;margin:0 auto;padding:4rem 1.5rem}
+@media(min-width:640px){.auth-wrap{padding:6rem 1.5rem}}
+.auth-card{background:var(--card);border-radius:1.875rem;border:1px solid var(--border);padding:2rem;box-shadow:var(--shadow-leaf);animation:scaleIn .5s var(--ease) both}
+.auth-icon{margin:0 auto;width:3.5rem;height:3.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-leaf)}
+.auth-icon svg{width:1.75rem;height:1.75rem;color:var(--primary-fg)}
+.auth-title{margin-top:1.25rem;font-family:var(--font-d);font-size:1.875rem;font-weight:700;text-align:center}
+.auth-sub{margin-top:.25rem;font-size:.875rem;color:var(--muted-fg);text-align:center}
+.auth-form{margin-top:1.75rem;display:flex;flex-direction:column;gap:1rem}
+.auth-field{display:flex;flex-direction:column;gap:.375rem}
+.auth-lbl{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-fg)}
+.auth-inp-wrap{position:relative}
+.auth-inp-wrap svg{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);width:1rem;height:1rem;color:var(--muted-fg)}
+.auth-inp{width:100%;border-radius:.75rem;border:1px solid var(--border);background:var(--bg);padding:.625rem .75rem .625rem 2.5rem;font-size:.875rem;color:var(--fg);outline:none;transition:border-color .2s,box-shadow .2s}
+.auth-inp.no-icon{padding-left:.75rem}
+.auth-inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in oklch,var(--primary) 15%,transparent)}
+.auth-submit{border-radius:9999px;background:var(--primary);color:var(--primary-fg);padding:.75rem;font-weight:700;font-size:.875rem;font-family:var(--font-s);display:flex;align-items:center;justify-content:center;gap:.5rem;transition:box-shadow .25s var(--ease);width:100%;cursor:pointer}
+.auth-submit:hover{box-shadow:var(--shadow-leaf)}
+.auth-submit svg{width:1rem;height:1rem}
+.auth-div{display:flex;align-items:center;gap:.75rem;font-size:.75rem;color:var(--muted-fg);margin:.25rem 0}
+.auth-div-line{height:1px;flex:1;background:var(--border)}
+.auth-soc{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.auth-soc-btn{border-radius:9999px;border:1px solid var(--border);padding:.625rem;font-size:.875rem;font-weight:700;text-align:center;transition:background .2s;cursor:pointer;background:var(--bg)}
+.auth-soc-btn:hover{background:var(--muted)}
+.auth-foot{margin-top:1.5rem;font-size:.875rem;color:var(--muted-fg);text-align:center}
+.auth-foot a{font-weight:700;color:var(--primary)}
+.password-strength{margin-top:.25rem;font-size:.6875rem}
+.strength-text{color:var(--muted-fg)}
+.strength-bar{height:3px;background:var(--border);border-radius:3px;margin-top:.25rem;overflow:hidden}
+.strength-fill{height:100%;width:0%;transition:width .2s,background .2s}
+.strength-fill.weak{background:#ef4444;width:25%}
+.strength-fill.fair{background:#f59e0b;width:50%}
+.strength-fill.good{background:#eab308;width:75%}
+.strength-fill.strong{background:#22c55e;width:100%}
+
+footer{margin-top:6rem;border-top:1px solid var(--border);background:color-mix(in oklch,var(--muted) 40%,transparent)}
+.ft-inner{padding:3.5rem 0}
+.ft-grid{display:grid;gap:2.5rem}
+@media(min-width:768px){.ft-grid{grid-template-columns:5fr 2fr 2fr 3fr}}
+.ft-brand p{margin-top:.75rem;max-width:28rem;font-size:.875rem;color:var(--muted-fg);line-height:1.65}
+.ft-nl{margin-top:1.25rem}
+.ft-nl-form{display:flex;flex-direction:column;gap:.5rem;max-width:22rem}
+@media(min-width:480px){.ft-nl-form{flex-direction:row}}
+.ft-nl-inp{flex:1;height:2.75rem;border-radius:9999px;border:1px solid var(--border);background:var(--bg);padding:0 1rem;color:var(--fg);font-family:var(--font-s);font-size:.875rem;outline:none}
+.ft-nl-inp:focus{border-color:var(--primary)}
+.ft-nl-btn{height:2.75rem;border-radius:9999px;padding:0 1.25rem;background:var(--primary);color:var(--primary-fg);font-weight:700;font-size:.875rem;font-family:var(--font-s);flex-shrink:0;transition:box-shadow .2s;cursor:pointer}
+.ft-nl-btn:hover{box-shadow:var(--shadow-leaf)}
+.ft-soc{margin-top:1.25rem;display:flex;gap:.5rem}
+.soc-btn{width:2.25rem;height:2.25rem;border-radius:50%;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center}
+.soc-btn:hover{background:var(--muted)}
+.soc-btn svg{width:1rem;height:1rem}
+.ft-col h4{font-family:var(--font-d);font-size:.875rem;font-weight:700}
+.ft-col ul{margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem}
+.ft-col ul a{font-size:.875rem;color:var(--muted-fg);transition:color .15s}
+.ft-col ul a:hover{color:var(--fg)}
+.ft-bot{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;font-size:.75rem;color:var(--muted-fg)}
+#toast-c{position:fixed;bottom:1.5rem;right:1.5rem;z-index:1000;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+.toast{display:flex;align-items:center;gap:.75rem;background:var(--card);border:1px solid var(--border);border-radius:.875rem;padding:.875rem 1.25rem;box-shadow:var(--shadow-soft);font-size:.875rem;font-weight:500;pointer-events:auto;animation:toastIn .3s var(--ease) both;max-width:22rem}
+.toast.out{animation:toastOut .3s var(--ease) both}
+.toast-ic{width:1.5rem;height:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.toast-ic.s{background:var(--primary);color:var(--primary-fg)}
+.toast-ic.e{background:var(--destructive);color:#fff}
+</style>
+</head>
+<body>
+
+<div id="toast-c"></div>
+
+<header id="hdr" class="glass">
+  <div class="wrap">
+    <div class="hdr-inner">
+      <a href="index.html" class="logo"><div class="logo-icon gl"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div><span class="logo-txt">Eco<span>Store</span></span></a>
+      <nav class="desk-nav"><a href="index.html" class="nav-a">Home</a><a href="shop.html" class="nav-a">Shop</a><a href="sellers.html" class="nav-a">Sell</a><a href="admin.html" class="nav-a" id="admin-nav-link" style="display:none">Admin</a><a href="learn.html" class="nav-a">Learn</a></nav>
+      <div class="hdr-actions">
+        <button class="ic-btn hide-sm" onclick="window.location.href='shop.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+        <button class="ic-btn hide-sm" onclick="window.location.href='wishlist.html'" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="ic-badge" id="wish-badge">0</span></button>
+        <button class="ic-btn hide-sm" id="auth-btn" onclick="window.location.href='account.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+        <div class="drop" id="drop-lang"><button class="ic-btn" onclick="toggleDrop('drop-lang')"><span id="lang-flag" style="font-size:1rem;line-height:1">🇬🇧</span></button><div class="drop-menu"><div class="drop-item active" onclick="setLang('en','🇬🇧','English')">🇬🇧 English</div><div class="drop-item" onclick="setLang('sw','🇹🇿','Kiswahili')">🇹🇿 Kiswahili</div><div class="drop-item" onclick="setLang('fr','🇫🇷','Français')">🇫🇷 Français</div><div class="drop-item" onclick="setLang('es','🇪🇸','Español')">🇪🇸 Español</div><div class="drop-item" onclick="setLang('ar','🇸🇦','العربية')">🇸🇦 العربية</div></div></div>
+        <div class="drop" id="drop-theme"><button class="ic-btn" onclick="toggleDrop('drop-theme')"><svg id="th-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg id="th-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button><div class="drop-menu"><div class="drop-item active" onclick="setTheme('light')">☀️ Light</div><div class="drop-item" onclick="setTheme('dark')">🌙 Dark</div><div class="drop-item" onclick="setTheme('system')">💻 System</div></div></div>
+        <button class="cart-btn" onclick="window.location.href='cart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-b" id="cart-badge">0</span></button>
+        <button class="ic-btn mob-btn" onclick="toggleMob()"><svg id="mob-menu-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg><svg id="mob-x-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div id="mob-nav"><div class="mob-links"><a href="index.html" class="mob-a">Home</a><a href="shop.html" class="mob-a">Shop</a><a href="sellers.html" class="mob-a">Sell</a><a href="admin.html" class="mob-a" id="mob-admin-link" style="display:none">Admin</a><a href="learn.html" class="mob-a">Learn</a><a href="account.html" class="mob-a">Account</a><a href="wishlist.html" class="mob-a">Wishlist</a><a href="signup.html" class="mob-a active">Sign Up</a></div></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-icon gl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg></div>
+        <h1 class="auth-title">Join the movement</h1>
+        <p class="auth-sub">Plant your first tree with us.</p>
+        
+        <form class="auth-form" onsubmit="event.preventDefault(); handleSignup()">
+          <div class="auth-field">
+            <label class="auth-lbl">Full name</label>
+            <input class="auth-inp no-icon" type="text" id="signup-name" placeholder="Jane Forest" required autocomplete="name">
+          </div>
+          <div class="auth-field">
+            <label class="auth-lbl">Email</label>
+            <div class="auth-inp-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><input class="auth-inp" type="email" id="signup-email" placeholder="you@earth.com" required autocomplete="email"></div>
+          </div>
+          <div class="auth-field">
+            <label class="auth-lbl">Password</label>
+            <div class="auth-inp-wrap" style="position:relative;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input class="auth-inp" type="password" id="signup-password" placeholder="••••••••" required minlength="6" autocomplete="new-password" oninput="checkPasswordStrength()">
+              <button type="button" id="togglePasswordBtn" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--muted-fg); padding:0; display:flex; align-items:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="password-strength"><span class="strength-text" id="strength-text">Password strength</span><div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div></div>
+          </div>
+          <div class="auth-field">
+            <label class="auth-lbl">Phone (optional)</label>
+            <input class="auth-inp no-icon" type="tel" id="signup-phone" placeholder="+255 XXX XXX XXX" autocomplete="tel">
+          </div>
+          <div class="auth-field">
+            <label class="auth-lbl">Address (optional)</label>
+            <textarea class="auth-inp no-icon" id="signup-address" rows="2" placeholder="Your address"></textarea>
+          </div>
+          <button class="auth-submit" type="submit">Create account <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+        </form>
+        
+        <div class="auth-div"><div class="auth-div-line"></div>or<div class="auth-div-line"></div></div>
+        
+        <div class="auth-soc">
+          <button class="auth-soc-btn" onclick="socialSignup('Google')">Google</button>
+          <button class="auth-soc-btn" onclick="socialSignup('Apple')">Apple</button>
+        </div>
+        
+        <p class="auth-foot">Already have an account? <a href="login.html">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap ft-inner">
+    <div class="ft-grid">
+      <div class="ft-brand"><a href="index.html" class="logo" style="margin-bottom:.75rem;display:inline-flex"><div class="logo-icon gl" style="width:2rem;height:2rem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--primary-fg)"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg></div><span class="logo-txt" style="font-size:1.25rem">EcoStore</span></a><p>The trusted marketplace for verified sustainable goods.</p><div class="ft-nl"><form class="ft-nl-form" onsubmit="subscribeNewsletter(event, 'ft-nl-email')"><input class="ft-nl-inp" type="email" id="ft-nl-email" placeholder="you@earth.com" required/><button class="ft-nl-btn" type="submit">Subscribe</button></form></div><div class="ft-soc"><a href="#" class="soc-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a><a href="#" class="soc-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a><a href="#" class="soc-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a></div></div>
+      <div class="ft-col"><h4>Shop</h4><ul><li><a href="shop.html">Shop</a></li><li><a href="wishlist.html">Wishlist</a></li><li><a href="cart.html">Cart</a></li><li><a href="orders.html">Orders</a></li></ul></div>
+      <div class="ft-col"><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="sellers.html">Sell</a></li><li><a href="learn.html">Learn</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="ft-col"><h4>Help</h4><ul><li><a href="faq.html">FAQ</a></li><li><a href="account.html">My account</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li></ul></div>
+    </div>
+    <div class="ft-bot"><span>© <span id="year"></span> EcoStore. Grown with care.</span><span>Carbon-neutral shipping • B-Corp pending</span></div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// SMART API BASE DETECTION
+// ============================================================
+
+function getApiBase() {
+  const path = window.location.pathname.replace(/\\/g, '/');
+  const frontendIndex = path.indexOf('/frontend/');
+  if (frontendIndex !== -1) {
+    return window.location.origin + path.slice(0, frontendIndex) + '/backend/api';
+  }
+  let base = window.location.origin + path.replace(/[^/]+$/, '');
+  if (base.includes('/frontend/')) {
+    base = base.replace('/frontend/', '/backend/api/');
+  } else {
+    base = base + (base.endsWith('/') ? '' : '/') + '../backend/api';
+  }
+  return base.replace(/\/\/+/g, '/').replace(/\/api\/?$/, '/api');
+}
+
+const API_BASE = getApiBase();
+console.log('API Base URL:', API_BASE);
+
+// ============================================================
+// PASSWORD VISIBILITY TOGGLE
+// ============================================================
+const toggleBtn = document.getElementById('togglePasswordBtn');
+const passwordInput = document.getElementById('signup-password');
+
+if (toggleBtn && passwordInput) {
+  toggleBtn.addEventListener('click', function() {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    } else {
+      passwordInput.type = 'password';
+      toggleBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
+  });
+}
+
+// ============================================================
+// SIGNUP FUNCTION
+// ============================================================
+
+let redirectUrl = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
+
+async function handleSignup() {
+  const name = document.getElementById('signup-name')?.value;
+  const email = document.getElementById('signup-email')?.value;
+  const password = document.getElementById('signup-password')?.value;
+  const phone = document.getElementById('signup-phone')?.value;
+  const address = document.getElementById('signup-address')?.value;
+  
+  if (!name || !email || !password) {
+    showToast('Please fill in all required fields', 'error');
+    return;
+  }
+  
+  if (password.length < 6) {
+    showToast('Password must be at least 6 characters', 'error');
+    return;
+  }
+  
+  try {
+    const response = await fetch(API_BASE + '/auth.php?action=register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, phone, address })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Server responded with status: ' + response.status);
+    }
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showToast('Account created successfully!', 'success');
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 500);
+    } else {
+      showToast(data.message, 'error');
+    }
+  } catch (error) {
+    console.error('Signup error:', error);
+    showToast('Connection error. API not found at: ' + API_BASE, 'error');
+  }
+}
+
+function socialSignup(provider) {
+  showToast(`${provider} signup coming soon!`, 'info');
+}
+
+function checkPasswordStrength() {
+  const password = document.getElementById('signup-password')?.value || '';
+  const strengthFill = document.getElementById('strength-fill');
+  const strengthText = document.getElementById('strength-text');
+  if (!strengthFill) return;
+  let strength = 0;
+  if (password.length >= 6) strength++;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+  if (/\d/.test(password)) strength++;
+  if (/[^a-zA-Z\d]/.test(password)) strength++;
+  strengthFill.className = 'strength-fill';
+  if (password.length === 0) {
+    strengthFill.style.width = '0%';
+    strengthText.textContent = 'Password strength';
+    return;
+  }
+  if (strength <= 1) { strengthFill.classList.add('weak'); strengthText.textContent = 'Weak password'; }
+  else if (strength === 2) { strengthFill.classList.add('fair'); strengthText.textContent = 'Fair password'; }
+  else if (strength === 3) { strengthFill.classList.add('good'); strengthText.textContent = 'Good password'; }
+  else { strengthFill.classList.add('strong'); strengthText.textContent = 'Strong password'; }
+}
+
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toast-c');
+  if (!container) return;
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  const icon = type === 'success' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  toast.innerHTML = `<div class="toast-ic ${type === 'success' ? 's' : 'e'}">${icon}</div><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.classList.add('out'); setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+async function subscribeNewsletter(e, inputId) {
+  e.preventDefault();
+  const input = document.getElementById(inputId);
+  if (!input || !input.value.includes('@')) { showToast('Please enter a valid email', 'error'); return; }
+  try {
+    const response = await fetch(API_BASE + '/contact.php?action=newsletter', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: input.value })
+    });
+    const data = await response.json();
+    showToast(data.message, data.success ? 'success' : 'error');
+    if (data.success) input.value = '';
+  } catch (error) { 
+    showToast('Subscribed! Welcome to the leaf letter 🌱', 'success');
+    input.value = '';
+  }
+}
+
+function setTheme(mode) {
+  const html = document.documentElement;
+  let theme = mode;
+  if (mode === 'system') theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  html.setAttribute('data-theme', theme);
+  localStorage.setItem('eco_theme', mode);
+  const sunIcon = document.getElementById('th-sun'), moonIcon = document.getElementById('th-moon');
+  if (sunIcon && moonIcon) { if (theme === 'dark') { sunIcon.style.display = 'none'; moonIcon.style.display = ''; } else { sunIcon.style.display = ''; moonIcon.style.display = 'none'; } }
+  closeAllDropdowns();
+}
+
+function setLang(code, flag, label) {
+  const langFlag = document.getElementById('lang-flag');
+  if (langFlag) langFlag.textContent = flag;
+  localStorage.setItem('eco_lang', code);
+  closeAllDropdowns();
+  showToast(`Language: ${label}`, 'success');
+}
+
+function toggleDrop(id) {
+  const dropdown = document.getElementById(id);
+  if (!dropdown) return;
+  const wasOpen = dropdown.classList.contains('open');
+  closeAllDropdowns();
+  if (!wasOpen) dropdown.classList.add('open');
+}
+
+function closeAllDropdowns() { document.querySelectorAll('.drop').forEach(d => d.classList.remove('open')); }
+
+function toggleMob() {
+  const mobNav = document.getElementById('mob-nav'), menuIcon = document.getElementById('mob-menu-ic'), xIcon = document.getElementById('mob-x-ic');
+  if (!mobNav) return;
+  const isOpen = mobNav.classList.contains('open');
+  if (isOpen) { mobNav.classList.remove('open'); if (menuIcon) menuIcon.style.display = ''; if (xIcon) xIcon.style.display = 'none'; }
+  else { mobNav.classList.add('open'); if (menuIcon) menuIcon.style.display = 'none'; if (xIcon) xIcon.style.display = ''; }
+}
+
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); } }); }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => { if (!el.classList.contains('in')) observer.observe(el); });
+}
+
+let cart = JSON.parse(localStorage.getItem('eco_cart') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('eco_wishlist') || '[]');
+function cartCount() { return cart.reduce((n, i) => n + i.qty, 0); }
+function updateCartBadge() { const count = cartCount(); const badge = document.getElementById('cart-badge'); if (badge) { badge.textContent = count; badge.classList.toggle('show', count > 0); } }
+function updateWishlistBadge() { const badge = document.getElementById('wish-badge'); if (badge) { badge.textContent = wishlist.length; badge.classList.toggle('show', wishlist.length > 0); } }
+
+document.getElementById('year').textContent = new Date().getFullYear();
+setTheme(localStorage.getItem('eco_theme') || 'light');
+const langMap = { en: ['🇬🇧', 'English'], sw: ['🇹🇿', 'Kiswahili'], fr: ['🇫🇷', 'Français'], es: ['🇪🇸', 'Español'], ar: ['🇸🇦', 'العربية'] };
+const savedLang = localStorage.getItem('eco_lang') || 'en';
+if (langMap[savedLang]) setLang(savedLang, langMap[savedLang][0], langMap[savedLang][1]);
+updateCartBadge(); updateWishlistBadge();
+document.addEventListener('click', e => { if (!e.target.closest('.drop')) closeAllDropdowns(); });
+window.addEventListener('scroll', () => { const header = document.getElementById('hdr'); if (header) header.style.boxShadow = window.scrollY > 10 ? 'var(--shadow-soft)' : ''; });
+setTimeout(initReveal, 300);
+</script>
+</body>
+</html>
